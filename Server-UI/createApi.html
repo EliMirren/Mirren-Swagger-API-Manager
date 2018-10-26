@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link rel="icon" href="https://v3.bootcss.com/favicon.ico">-->
+    <title>Mirren-Swagger-API-Manager</title>
+    <link href="lib/css/bootstrap.min.css" rel="stylesheet">
+    <link href="lib/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="lib/css/dashboard.css" rel="stylesheet">
+    <link href="lib/css/swagger-ui.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="lib/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="lib/js/ie-emulation-modes-warning.js"></script>
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.min.js"></script>
+    <script src="lib/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!--隐藏的表达用于存储临时变量-->
+<!--项目的id-->
+<input type="hidden" id="hide_project_id">
+<!--接口分组的id-->
+<input type="hidden" id="hide_api_group_id">
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html" id="return_index">返回主页</a>
+            <a class="navbar-brand">Mirren-Swagger-API-Manager</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://www.szmirren.com/" target="_blank">Mirren Tools</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 main">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label for="api_method" class="col-sm-2 control-label">Method:</label>
+                    <div class="col-sm-10">
+                        <select class="form-control inline-block width-20per min-width-100px" id="api_method">
+                            <option value="get">get</option>
+                            <option value="head">head</option>
+                            <option value="post">post</option>
+                            <option value="put">put</option>
+                            <option value="delete">delete</option>
+                            <option value="options">options</option>
+                            <option value="patch">patch</option>
+                            <option value="trace">trace</option>
+                            <option value="connect">connect</option>
+                            <option value="other">other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="api_path" class="col-sm-2 control-label"> Path: </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="api_path" placeholder="URL上的path,必填,如果没有/,系统会自动加上/">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="api_summary" class="col-sm-2 control-label">简介:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="api_summary" placeholder="接口的简单描述,必填 ">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="api_description" class="col-sm-2 control-label">详细说明:</label>
+                    <div class="col-sm-10">
+                            <textarea class="form-control none_resize" rows="3" id="api_description"
+                                      placeholder="接口的详细描述"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="api_consumes" class="col-sm-2 control-label"> Consumes: </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control " id="api_consumes"
+                               placeholder="consumes 多个以英文的,号分开">
+                    </div>
+                </div>
+                <!--新增请求参数与响应参数等-->
+                <div class="form-group">
+                    <label for="api_parameters_table" class="col-sm-2 control-label">请求参数:</label>
+                    <div class="col-sm-10">
+                        <div class="table-responsive">
+                            <table class="table table-bordered mb5px">
+                                <thead>
+                                <tr>
+                                    <th>必填</th>
+                                    <th>参数位置</th>
+                                    <th>参数类型</th>
+                                    <th>参数名称</th>
+                                    <th>参数描述</th>
+                                    <th class="text-center">更多</th>
+                                    <th class="text-center">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody id="api_parameters_table">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <button class="pull-right btn-sm btn btn-default"
+                                onclick="addParamterToTableBody('api_parameters_table',getRequestParameterTableHtml())">
+                            添加参数
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="api_produces" class="col-sm-2 control-label">Produces:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="api_produces" placeholder="produces 多个以英文的,号分开">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">响应结果:</label>
+                    <div class="col-sm-10">
+                        <div id="response-parameters">
+
+                        </div>
+                        <div class="clearfix"></div>
+                        <button class="pull-right btn btn-sm btn-default" onclick="addResponse()">添加响应结果</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">附加说明:</label>
+                    <div class="col-sm-10">
+                        <div id="api-additional-instructions">
+                        </div>
+                        <button class="pull-right btn-sm btn btn-default" onclick="addAdditionalInstructions()">
+                            添加更多
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="button" class="btn btn-lg btn-primary" onclick="createApi()">确定创建</button><br>
+            <smell>提示:请求参数与响应参数中,参数名字为空的将会被剔除</smell>
+        </div>
+    </div>
+</div>
+
+<!--请求参数更多设置的静态框-->
+<div class="modal fade bs-example-modal-lg " id="request-parameter-set-modal" tabindex="-1" role="dialog"
+     aria-hidden="true"
+     data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">编辑更多参数属性</h4>
+            </div>
+            <div class="modal-body" id="request-parameter-set-modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="request-parameter-set-modal-confirm"> 确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--相应参数的静态框-->
+<div class="modal fade bs-example-modal-lg " id="response-parameter-set-modal" tabindex="-1" role="dialog"
+     aria-hidden="true"
+     data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">编辑响应参数属性</h4>
+            </div>
+            <div class="modal-body" id="response-parameter-set-modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">参数类型:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="response-parameter-set-modal_type"
+                                    onchange="responseResponseAttribiteTypeChange(this[selectedIndex].value)">
+                                <option value="string">string</option>
+                                <option value="int32">int32</option>
+                                <option value="int64">int64</option>
+                                <option value="float">float</option>
+                                <option value="double">double</option>
+                                <option value="number">number</option>
+                                <option value="boolean">boolean</option>
+                                <option value="object">object</option>
+                                <option value="array">array</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group display-none" id="api_response_attribute_table_box">
+                        <label class="col-sm-2 control-label">参数名称:</label>
+                        <div class="col-sm-10">
+                            <div class="table-responsive">
+                                <table class="table table-bordered mb5px">
+                                    <thead>
+                                    <tr>
+                                        <th>参数类型</th>
+                                        <th>参数名称</th>
+                                        <th>参数描述</th>
+                                        <th class="text-center">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="response-parameter-set-modal_table">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button class="pull-right btn-sm btn btn-default"
+                                    onclick="addParamterToTableBody('response-parameter-set-modal_table',getParameterAttributeTableHtml())">
+                                添加参数
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="response-parameter-set-modal_table" class="col-sm-2 control-label">参数名称:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="response-parameter-set-modal_name"
+                                   placeholder="参数的名称 必填">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="response-parameter-set-modal_description"
+                               class="col-sm-2 control-label">参数描述:</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control none_resize" id="response-parameter-set-modal_description"
+                                      rows="3" placeholder="参数的描述"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hide-add-to-response-parmeter-table-body">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="addResponseParameterToResponseTable()">确定
+                </button>
+                <button type="button" class="btn btn-primary" onclick="addResponseParameterToResponseTable(true)">
+                    确定并关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--依赖的架包-->
+<script src="lib/js/jquery.js"></script>
+<script>window.jQuery || document.write('<script src="UI/lib/js/jquery.min.js"><\/script>')</script>
+<script src="lib/js/bootstrap.min.js"></script>
+<script src="lib/js/holder.js"></script>
+<script src="lib/js/ie10-viewport-bug-workaround.js"></script>
+<!--页面相关的js-->
+<script src="js/common.js"></script>
+<script src="js/index_operation.js"></script>
+<script src="js/index.js"></script>
+<script src="js/api_opreation.js"></script>
+<script src="js/api.js"></script>
+<script>
+    $(function () {
+        var pid = getUrlParam("pid");
+        if (pid != null && pid != '') {
+            $("#hide_project_id").val(pid)
+            var href = $("#return_index").attr('href');
+            $("#return_index").attr('href', href + '?pid=' + pid);
+        }
+        var gid = getUrlParam("gid");
+        if (gid != null && gid != '') {
+            $("#hide_api_group_id").val(gid)
+        }
+    })
+</script>
+
+</body>
+</html>

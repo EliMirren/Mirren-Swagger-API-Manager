@@ -1,0 +1,168 @@
+th{
+    padding: 3px!important;
+}
+td{
+    padding: 3px!important;
+}
+.fond-size-12 {
+    font-size: 12px;
+}
+
+.fond-size-16 {
+    font-size: 16px;
+}
+
+.fond-size-20 {
+    font-size: 20px;
+}
+
+.fond-size-26 {
+    font-size: 26px;
+}
+
+.fond-size-30 {
+    font-size: 30px;
+}
+
+.mleft10px {
+    margin-left: 10px;
+}
+
+.mr10px {
+    margin-right: 10px;
+}
+
+.mb0px {
+    margin-bottom: 0;
+}
+
+.mb3px {
+    margin-bottom: 3px;
+}
+
+.mb5px {
+    margin-bottom: 5px;
+}
+
+.mb10px {
+    margin-bottom: 10px;
+}
+
+.mall0px {
+    margin: 0 !important;
+}
+
+.pd5px {
+    padding: 5px !important;
+}
+
+.pd5px10px {
+    padding: 5px 10px !important;
+}
+
+.pall0px {
+    padding: 0 !important;
+}
+
+.plr20px {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.text-align-center {
+    text-align: center !important;
+}
+
+.bc-white {
+    background-color: white;
+}
+.radius5px{
+    border-radius: 5px;
+}
+.border1-radius5-pading3 {
+    border: 1px;
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.border1px-solid-ccc {
+    border: 1px solid #ccc;
+}
+
+.method {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 0 3px;
+    margin-left: 5px;
+    display: inline-block !important;
+}
+
+.min-width-100px {
+    min-width: 100px;
+}
+
+.width-20per {
+    width: 20% !important;
+}
+
+.width-70per {
+    width: 70% !important;
+}
+
+.width-40per {
+    width: 40% !important;
+}
+
+.width-75per {
+    width: 75% !important;
+}
+
+.inline-block {
+    display: inline-block !important;
+}
+
+.none_resize {
+    resize: none;
+}
+
+.form-group-in-input {
+    display: inline-block;
+    width: 32.8% !important;
+}
+
+.cursor-hand {
+    cursor: pointer;
+}
+
+.api-list .api-list-item {
+    border: 1px solid red;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.display-none {
+    display: none;
+}
+.background-color-white{
+    background-color: white;
+}
+
+.background-right-icon {
+    background-image: url('../images/right_icon.png');
+    background-repeat: no-repeat;
+    background-position-x: right;
+    background-position-y: center;
+    background-size: auto;
+}
+
+.background-down-icon {
+    background-image: url('../images/down_icon.png');
+    background-repeat: no-repeat;
+    background-position-x: right;
+    background-position-y: center;
+    background-size: auto;
+}
+
+
+
+

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link rel="icon" href="https://v3.bootcss.com/favicon.ico">-->
+    <title>Mirren-Swagger-API-Manager</title>
+    <link href="lib/css/bootstrap.min.css" rel="stylesheet">
+    <link href="lib/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="lib/css/dashboard.css" rel="stylesheet">
+    <link href="lib/css/swagger-ui.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="lib/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="lib/js/ie-emulation-modes-warning.js"></script>
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.min.js"></script>
+    <script src="lib/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!--隐藏的表达用于存储临时变量-->
+<!--项目的id-->
+<input type="hidden" id="hide_project_id">
+<!--接口分组的id-->
+<input type="hidden" id="hide_api_group_id">
+<!--新建接口时接口选中的接口分组id-->
+<input type="hidden" id="hide_create_api_group_id">
+<!--接口的id-->
+<input type="hidden" id="hide_api_id">
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand">Mirren-Swagger-API-Manager</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://www.szmirren.com/" target="_blank">Mirren Tools</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <div class="text-right">
+                <a class="btn btn-lg btn-primary" href="create.html">新建项目</a>
+            </div>
+            <div class="fond-size-26">项目列表</div>
+            <ul class="nav nav-sidebar" id="project_list">
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div id="project_info_body">
+                <h1 class="page-header">点击项目列表加载项目信息</h1>
+            </div>
+            <div id="project_info_APIs" class="display-none">
+                <hr>
+                <h1 class="page-header">接口管理
+                    <span class="btn btn-sm btn-primary mleft10px" onclick="createApiGroupShow()">新建接口分组</span>
+                    <small class="fond-size-12">点击分组栏切换状态分组状态,点击接口栏切换接口状态</small>
+                </h1>
+                <div id="project_info_APIs_tips"></div>
+                <div id="project_info_APIs_item"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--接口分组管理的静态框-->
+<div class="modal fade bs-example-modal-lg " id="api-group-modal" tabindex="-1" role="dialog" aria-hidden="true"
+     data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><span id="api-group-model-title"></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label for="api_group_name" class="col-sm-2 control-label">分组名称:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="api_group_name" placeholder="分组的名称 必填">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="api_group_summary" class="col-sm-2 control-label">分组简介:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="api_group_summary"
+                                   placeholder="分组的简介,简单描述该分组 必填">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="api_group_description" class="col-sm-2 control-label">分组描述:</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control none_resize" rows="3" id="api_group_description"
+                                      placeholder="分组的详细描述"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">拓展文档:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control form-group-in-input"
+                                   id="api_group_externalDocs_description"
+                                   placeholder="拓展文档的描述">
+                            <input type="text" class="form-control form-group-in-input" id="api_group_externalDocs_url"
+                                   placeholder="拓展文档的链接地址">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="createApiGroup()" id="create-api-group-btn">
+                    确定创建
+                </button>
+                <button type="button" class="btn btn-primary" onclick="updateApiGroup()" id="update-api-group-btn">
+                    确定修改
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--依赖的架包-->
+<script src="lib/js/jquery.js"></script>
+<script>window.jQuery || document.write('<script src="UI/lib/js/jquery.min.js"><\/script>')</script>
+<script src="lib/js/bootstrap.min.js"></script>
+<script src="lib/js/holder.js"></script>
+<script src="lib/js/ie10-viewport-bug-workaround.js"></script>
+<!--页面相关的js-->
+<script src="js/common.js"></script>
+<script src="js/index_operation.js"></script>
+<script src="js/index.js"></script>
+<script src="js/api.js"></script>
+
+<script>
+    /**
+     * 初始化
+     */
+    $(function () {
+        //加载项目列表,加载完毕后如果有选中项目就加载项目
+        loadProjectList(function () {
+            //加载项目属性
+            var pid = getUrlParam("pid");
+            if (pid != null && pid != '') {
+                loadProject(pid);
+            }
+        });
+    });
+</script>
+</body>
+</html>
