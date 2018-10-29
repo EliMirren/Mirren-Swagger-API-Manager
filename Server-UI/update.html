@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--<link rel="icon" href="https://v3.bootcss.com/favicon.ico">-->
-    <title>Mirren-Swagger-API-Manager</title>
+    <title>MSAM-Update-Project</title>
     <link href="lib/css/bootstrap.min.css" rel="stylesheet">
     <link href="lib/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
     <link href="lib/css/dashboard.css" rel="stylesheet">
@@ -30,7 +30,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html">返回主页</a>
+            <a class="navbar-brand" href="./index.html" id="return_index">返回主页</a>
             <a class="navbar-brand">Mirren-Swagger-API-Manager</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
@@ -184,9 +184,16 @@
 <script src="js/common.js"></script>
 <script src="js/index.js"></script>
 <script>
-    //加载页面属性
-    var pid=getUrlParam("pid");
-    loadUpdateProject(pid);
+    $(function () {
+        //加载页面属性
+        var pid = getUrlParam("pid");
+        loadUpdateProject(pid);
+        if (pid != null && pid != '') {
+            $("#hide_project_id").val(pid);
+            $("#return_index").attr('href', './index.html?pid=' + pid);
+        }
+    });
+
 </script>
 </body>
 </html>
