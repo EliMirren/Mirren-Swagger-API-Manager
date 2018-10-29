@@ -16,18 +16,18 @@ function loadProjectList(complete) {
             }
             complete();//执行加载完成事件
         } else {
-            alert("获取项目列表失败,");
             console.log("msg:" + result.msg + " ,data:");
             console.log(result.data);
+            confirm("获取项目列表失败,");
         }
     }, function (e) {
         console.log("获取项目列表失败...");
         console.log(e);
         var state = e.readyState;
         if (state == 0) {
-            alert('获取最新数据需要先启动服务器,请在当前目录双击start.bat');
+            alert('获取数据需要先启动服务器,请在当前目录双击start.bat');
         } else {
-            alert('获取数据失败了');
+            confirm('获取数据失败了');
         }
     });
 }
@@ -40,18 +40,18 @@ function getProject(id, res) {
         if (result.code == 200) {
             return res(result.data);
         } else {
-            alert("获取项目失败,");
             console.log("msg:" + result.msg + " ,data:");
             console.log(result.data);
+            confirm("获取项目失败,");
         }
     }, function (e) {
         console.log("获取数据失败...");
         console.log(e);
         var state = e.readyState;
         if (state == 0) {
-            alert('获取最新数据需要先启动服务器,请在当前目录双击start.bat');
+            alert('获取数据需要先启动服务器,请在当前目录双击start.bat');
         } else {
-            alert('获取数据失败了');
+            confirm('获取数据失败了');
         }
     });
 }
@@ -90,9 +90,9 @@ function loadApiGroup(projectId) {
             console.log('加载项目接口分组成功!');
             loadApiGroupAndApiOpblack(result.data);
         } else {
-            alert("加载项目接口分组失败");
             console.log("msg:" + result.msg + " ,data:");
             console.log(result.data);
+            confirm("加载项目接口分组失败");
         }
     }, function (e) {
         console.log("加载项目接口分组失败...");
@@ -101,7 +101,7 @@ function loadApiGroup(projectId) {
         if (state == 0) {
             alert('加载项目接口分组需要先启动服务器,请在当前目录双击start.bat');
         } else {
-            alert('加载项目接口分组失败了');
+            confirm('加载项目接口分组失败了');
         }
     });
 }
@@ -220,7 +220,7 @@ function createProject() {
         console.log(e);
         var state = e.readyState;
         if (state == 0) {
-            alert('获取最新数据需要先启动服务器,请在当前目录双击start.bat');
+            alert('获取数据需要先启动服务器,请在当前目录双击start.bat');
         } else {
             alert('获取数据失败了');
         }
@@ -278,6 +278,16 @@ function updateProject() {
     if (swagger.externalDocs == null) {
         swagger.externalDocs = "{}";
     }
+    if (swagger.vendorExtensions == null) {
+        var ve = {};
+        ve.updateTime = new Date().toLocaleString();
+        swagger.vendorExtensions = JSON.stringify(ve);
+    } else {
+        var ve = JSON.parse(swagger.vendorExtensions);
+        ve.updateTime = new Date().toLocaleString();
+        swagger.vendorExtensions = JSON.stringify(ve);
+    }
+
     if (IS_DEBUG_ENABLED) {
         console.log(swagger);
     }
@@ -287,11 +297,11 @@ function updateProject() {
     doAJAX(METHOD_PUT, 'http://localhost:8686/project', swagger, function (result) {
         if (result.code == 200) {
             console.log("修改成功");
-            self.location = "index.html";
+            self.location = "./index.html?pid=" + swagger.key;
         } else {
-            alert("修改项目失败");
             console.log("msg:" + result.msg + " ,data:");
             console.log(result.data);
+            confirm("修改项目失败");
         }
     }, function (e) {
         console.log("修改项目失败...");
@@ -300,7 +310,7 @@ function updateProject() {
         if (state == 0) {
             alert('修改项目需要先启动服务器,请在当前目录双击start.bat');
         } else {
-            alert('修改项目失败了');
+            confirm('修改项目失败了');
         }
     });
 }
@@ -315,7 +325,7 @@ function deletProject(id) {
                 console.log("删除成功");
                 location.reload();
             } else {
-                alert("删除项目失败");
+                confirm("删除项目失败");
                 console.log("msg:" + result.msg + " ,data:");
                 console.log(result.data);
                 location.reload();
@@ -327,7 +337,7 @@ function deletProject(id) {
             if (state == 0) {
                 alert('删除项目需要先启动服务器,请在当前目录双击start.bat');
             } else {
-                alert('删除项目失败了');
+                confirm('删除项目失败了');
             }
         });
     }
@@ -381,7 +391,7 @@ function createApiGroup() {
         } else {
             console.log("msg:" + result.msg + " ,data:");
             console.log(result.data);
-            alert("新增分组失败");
+            confirm("新增分组失败");
             location.reload();
         }
     }, function (e) {
@@ -408,7 +418,7 @@ function loadUpdateApiGroup(id) {
         } else {
             console.log("msg:" + result.msg + " ,data:");
             console.log(result.data);
-            alert("加载接口分组修改数据失败");
+            confirm("加载接口分组修改数据失败");
         }
     }, function (e) {
         console.log("加载接口分组修改数据失败...");
@@ -446,7 +456,7 @@ function updateApiGroup() {
         } else {
             console.log("msg:" + result.msg + " ,data:");
             console.log(result.data);
-            alert("修改接口分组修改数据失败");
+            confirm("修改接口分组修改数据失败");
         }
     }, function (e) {
         console.log("修改接口分组修改数据失败...");
@@ -470,7 +480,7 @@ function deleteApiGroup(id) {
             } else {
                 console.log("msg:" + result.msg + " ,data:");
                 console.log(result.data);
-                alert("删除接口分组失败");
+                confirm("删除接口分组失败");
                 location.reload();
             }
         }, function (e) {

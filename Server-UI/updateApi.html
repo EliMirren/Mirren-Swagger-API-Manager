@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--<link rel="icon" href="https://v3.bootcss.com/favicon.ico">-->
-    <title>MSAM-Create-API</title>
+    <title>MSAM-Update-API</title>
     <link href="lib/css/bootstrap.min.css" rel="stylesheet">
     <link href="lib/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
     <link href="lib/css/dashboard.css" rel="stylesheet">
@@ -26,6 +26,15 @@
 <input type="hidden" id="hide_project_id">
 <!--接口分组的id-->
 <input type="hidden" id="hide_api_group_id">
+<!--接口分组的id-->
+<input type="hidden" id="hide_api_id">
+<!--数据加载提示框-->
+<div class="load-api-tips"
+     style="width:100%; height: 100%;background-color: black;text-align: center; opacity: 0.6;z-index: 997;position: absolute">
+</div>
+<div class="load-api-tips" style="width:40%; height: 20%;background-color: white;left:30%;top: 20%;z-index: 999;position: absolute">
+    <h2 class="text-center" id="load-api-tips-text">数据加载中...</h2>
+</div>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
@@ -67,6 +76,13 @@
                             <option value="connect">connect</option>
                             <option value="other">other</option>
                         </select>
+                        <div class="inline-block mleft10px">
+                            <span>接口状态: </span>
+                            <select class="form-control inline-block width-70per min-width-100px" id="api_deprecated">
+                                <option value="false">服务中</option>
+                                <option value="true">已过期(以后会删除)</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -153,7 +169,8 @@
             </div>
         </div>
         <div class="text-center">
-            <button type="button" class="btn btn-lg btn-primary" onclick="createApi()">确定创建</button><br>
+            <button type="button" class="btn btn-lg btn-primary" onclick="updateApi()">确定修改</button>
+            <br>
             <smell>提示:请求参数与响应参数中,参数名字为空的将会被剔除</smell>
         </div>
     </div>
@@ -290,6 +307,14 @@
         if (gid != null && gid != '') {
             $("#hide_api_group_id").val(gid)
         }
+        var aid = getUrlParam("aid");
+        if (aid != null && aid != '') {
+            $("#hide_api_id").val(aid)
+        } else {
+            alert("Query参数中无法获取到接口的id");
+            return;
+        }
+        loadApiUpdateInfo(aid);
     })
 </script>
 

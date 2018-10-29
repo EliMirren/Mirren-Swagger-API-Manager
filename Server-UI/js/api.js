@@ -16,18 +16,72 @@ function createApi() {
     doAJAX(METHOD_POST, 'http://localhost:8686/api', api, function (result) {
         if (result.code == 200) {
             console.log('新增接口成功');
-            alert('新增接口成功');
+            alert('新增接口成功!');
         } else {
             console.log("msg:" + result.msg + " ,data:");
             console.log(result.data);
-            alert("新增接口失败");
+            confirm("新增接口失败!!!!!!");
         }
     }, function (e) {
         console.log("新增接口失败...");
         console.log(e);
         var state = e.readyState;
         if (state == 0) {
-            alert('新增接口需要先启动服务器,请在当前目录双击start.bat');
+            confirm('新增接口需要先启动服务器,请在当前目录双击start.bat');
+        }
+    });
+}
+
+/**
+ * 修改API
+ */
+function updateApi() {
+    var api = getApiInfo();
+    api.operationId = $("#hide_api_id").val();
+    api.deprecated = $("#api_deprecated").val();
+
+    if (api == null) {
+        return;
+    }
+    if (api.description == null) {
+        api.description = "";
+    }
+    if (api.consumes == null) {
+        api.consumes = "[]";
+    }
+    if (api.produces == null) {
+        api.produces = "[]";
+    }
+    if (api.parameters == null) {
+        api.parameters = "[]";
+    }
+    if (api.responses == null) {
+        api.responses = "[]";
+    }
+    if (api.vendorExtensions == null) {
+        api.vendorExtensions = "{}";
+    }
+    if (IS_DEBUG_ENABLED) {
+        console.log('API data is:');
+        console.log(api);
+    }
+
+    doAJAX(METHOD_PUT, 'http://localhost:8686/api', api, function (result) {
+        if (result.code == 200) {
+            console.log('新增接口成功');
+            alert('修改接口成功!');
+            window.location.reload();
+        } else {
+            console.log("msg:" + result.msg + " ,data:");
+            console.log(result.data);
+            confirm("修改接口失败!!!!!!");
+        }
+    }, function (e) {
+        console.log("修改接口失败...");
+        console.log(e);
+        var state = e.readyState;
+        if (state == 0) {
+            confirm('修改接口需要先启动服务器,请在当前目录双击start.bat');
         }
     });
 }
@@ -45,7 +99,7 @@ function deleteApi(id) {
             } else {
                 console.log("msg:" + result.msg + " ,data:");
                 console.log(result.data);
-                alert("删除接口失败");
+                confirm("删除接口失败!!!!!!");
                 location.reload();
             }
         }, function (e) {
@@ -53,7 +107,7 @@ function deleteApi(id) {
             console.log(e);
             var state = e.readyState;
             if (state == 0) {
-                alert('删除接口需要先启动服务器,请在当前目录双击start.bat');
+                confirm('删除接口需要先启动服务器,请在当前目录双击start.bat');
             }
         });
     }

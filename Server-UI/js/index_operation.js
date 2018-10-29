@@ -34,7 +34,7 @@ function showOrHideApiOpblock(obj) {
         $(obj).attr("data", 'hide');
         $(obj).next().hide();
     }
-
+    textareaAutoHeight($($(obj).parent().parent()));
 }
 /**
  * 加载项目选中状态
@@ -61,9 +61,17 @@ function loadProjectInfo(data) {
     var txt =
         '<h1 class="page-header">' + info.title +
         '<span class="badge"> ' + info.version + '</span>' +
-        '<a href="update.html?pid=' + data.key + '" class="btn btn-ms btn-primary mleft10px">修改</a>' +
-        '<span class="btn btn-ms btn-danger mleft10px" onclick="deletProject(\'' + data.key + '\')">删除</span>' +
-        '</h1>';
+        '<a href="./update.html?pid=' + data.key + '" class="btn btn-ms btn-primary mleft10px">修改</a>' +
+        '<span class="btn btn-ms btn-danger mleft10px" onclick="deletProject(\'' + data.key + '\')">删除</span>';
+    if (data.vendorExtensions != null) {
+        var ve = JSON.parse(data.vendorExtensions);
+        if (ve.updateTime != null) {
+            txt += '<i class="fond-size-16 mleft10px">修改时间: ' + ve.updateTime + '</i>';
+        }
+    }
+    txt += '</h1>';
+    txt+='<a class="btn btn-primary" href="http://localhost:8686/project/down/'+data.key+'">将项目转为Swagger_2.0 .Json文件并下载</a>';
+
     txt += '<h3>主机地址: <span>' + data.host + '</span></h3>';
     if (data.basePath != null) {
         txt += '<h4>Base URL: <span' + data.basePath + '</span></h4>';
@@ -100,6 +108,7 @@ function loadProjectInfo(data) {
             '<i class="mleft10px"></i><i class="mleft10px"></i>联系方式: <span>' + info.contact.email + '</span>' +
             '<i class="mleft10px"></i><i class="mleft10px"></i>URL: <a href="' + info.contact.url + '">' + info.contact.url + '</a></h4>';
     }
+
     $("#project_info_body").html($(txt));
     $("#project_info_APIs").show();//加载接口分组信息
     initProjectActive(data.key);
@@ -145,6 +154,7 @@ function loadApiGroupAndApiOpblack(items) {
         if (data.description != null) {
             txt += '<p id="api_group_description_' + data.groupId + '">' + data.description + '</p>';
         }
+
         //swagger-ui begin
         txt += '<div class="swagger-ui">';
         if (data.apis != null && data.apis.length > 0) {
@@ -159,7 +169,7 @@ function loadApiGroupAndApiOpblack(items) {
                 //opblock begin
                 txt += '<div class="opblock opblock-' + method + '">';
                 //opblock-summary begin
-                txt += '<div class="opblock-summary opblock-summary-' + method + '" onclick="showOrHideApiOpblock(this)"data="hide">';
+                txt += '<div class="opblock-summary opblock-summary-' + method + '" onclick="showOrHideApiOpblock(this)" data="hide">';
                 txt += '<span class="opblock-summary-method">' + method.toLocaleUpperCase() + '</span>';
                 txt += '<span class="opblock-summary-path' + deprecated + '"><span>' + opblack.path + '</span></span>';
                 txt += '<div class="opblock-summary-description">' + opblack.summary + '</div>';
@@ -171,7 +181,7 @@ function loadApiGroupAndApiOpblack(items) {
                 txt +=
                     '<div class="opblock-section">' +
                     '<div class="opblock-section-header">' +
-                    '<a class="btn btn-sm btn-default">修改</a>' +
+                    '<a class="btn btn-sm btn-default" href="./updateApi.html?gid=' + data.groupId + '&pid=' + data.projectId + '&aid=' + opblack.operationId + '">修改</a>' +
                     '<span class="btn btn-sm btn-danger mleft10px" onclick="deleteApi(\'' + opblack.operationId + '\')">删除</span>' +
                     '</div>' +
                     '</div>';
@@ -184,15 +194,32 @@ function loadApiGroupAndApiOpblack(items) {
                         '</div>';
                 }
                 //接口描述 end
+
                 //请求参数 begin
+                txt +=
+                    '<div class="responses-wrapper">' +
+                    '<div class="opblock-section-header">' +
+                    '<h4><strong>请求参数</strong></h4>';
+                if (opblack.consumes != null) {
+                    var consumes = JSON.parse(opblack.consumes);
+                    txt +=
+                        '<label>' +
+                        '<span>Consumes:</span>' +
+                        '<div class="content-type-wrapper execute-content-type">' +
+                        '<select class="content-type">';
+                    for (var cs = 0; cs < consumes.length; cs++) {
+                        txt += '<option value="' + consumes[cs] + '">' + consumes[cs] + '</option>';
+                    }
+                    txt +=
+                        '</select>' +
+                        '</div>' +
+                        '</label>';
+                }
+                txt += '</div></div>';
+                //consumes end
                 if (opblack.parameters != null) {
                     var parameters = JSON.parse(opblack.parameters);
                     if (parameters.length > 0) {
-                        txt +=
-                            '<div class="opblock-section-header">' +
-                            '<div class="tab-header"><h4 class="opblock-title"><strong>请求参数</strong></h4>' +
-                            '</div>' +
-                            '</div>';
                         txt +=
                             '<div class="table-responsive plr20px">' +
                             '<table class="table table-bordered">' +
@@ -297,6 +324,7 @@ function loadApiGroupAndApiOpblack(items) {
                 }
                 //请求参数 end
 
+
                 //返回结果 begin
                 //返回结果 responses-wrapper begin
                 txt +=
@@ -307,7 +335,7 @@ function loadApiGroupAndApiOpblack(items) {
                     var produces = JSON.parse(opblack.produces);
                     txt +=
                         '<label>' +
-                        '<span>返回类型</span>' +
+                        '<span>Produces : </span>' +
                         '<div class="content-type-wrapper execute-content-type">' +
                         '<select class="content-type">';
                     for (var pr = 0; pr < produces.length; pr++) {
@@ -337,7 +365,7 @@ function loadApiGroupAndApiOpblack(items) {
                             '<tbody>';
                         for (var resp = 0; resp < responses.length; resp++) {
                             //添加基本描述
-                            txt += '<tr><td>' + responses[resp].statusCode + '</td><td>' + responses[resp].description + '</td></tr>';
+                            txt += '<tr><td>' + responses[resp].statusCode + '</td><td><textarea class="focus-border-0px min-height-0 font-weight-normal none_resize" contenteditable="true" readonly="readonly">' + responses[resp].description + '</textarea></td></tr>';
                             //添加详细参数描述
                             if (responses[resp].vendorExtensions != null) {
                                 var ve = JSON.parse(responses[resp].vendorExtensions);
@@ -346,16 +374,16 @@ function loadApiGroupAndApiOpblack(items) {
                                     if (!jQuery.isEmptyObject(ve_ps)) {
                                         txt +=
                                             '<tr><td colspan="2" class="pall0px"><table class="table table-bordered mall0px">' +
-                                            '<thead><tr><th>参数名称</th><th>参数类型</th><th>参数描述</th></tr></thead><tbody>';
+                                            '<thead><tr><th>参数类型</th><th>参数名称</th><th>参数描述</th></tr></thead><tbody>';
                                         for (var vep = 0; vep < ve_ps.length; vep++) {
-                                            txt += '<tr><td>' + ve_ps[vep].name + '</td><td>' + ve_ps[vep].type + '</td><td>' + ve_ps[vep].description + '</td>';
+                                            txt += '<tr><td>' + ve_ps[vep].type + '</td><td>' + ve_ps[vep].name + '</td><td>' + ve_ps[vep].description + '</td>';
                                             if ((ve_ps[vep].type == 'array' || ve_ps[vep].type == 'object') && ve_ps[vep].items != null) {
-                                                var vep_bodys = JSON.parse(ve_ps[vep].items);
+                                                var vep_bodys = ve_ps[vep].items;
                                                 if (!jQuery.isEmptyObject(vep_bodys)) {
                                                     txt += '<tr><td></td> <td colspan="2" class="pall0px"><table class="table table-bordered mall0px">';
-                                                    txt += '<thead><tr><th>参数名称</th><th>参数类型</th><th>参数描述</th></tr></thead><tbody>';
+                                                    txt += '<thead><tr><th>参数类型</th><th>参数名称</th><th>参数描述</th></tr></thead><tbody>';
                                                     for (var vepb = 0; vepb < vep_bodys.length; vepb++) {
-                                                        txt += '<tr><td>' + vep_bodys[vepb].name + '</td><td>' + vep_bodys[vepb].type + '</td><td>' + vep_bodys[vepb].description + '</td>';
+                                                        txt += '<tr><td>' + vep_bodys[vepb].type + '</td><td>' + vep_bodys[vepb].name + '</td><td>' + vep_bodys[vepb].description + '</td>';
                                                     }
                                                     txt += '</tbody></table></td></tr>';
                                                 }
@@ -372,6 +400,27 @@ function loadApiGroupAndApiOpblack(items) {
                 }
                 //返回结果,返回参数 end
                 //返回结果 end
+                //附加说明 begin
+                if (opblack.vendorExtensions != null) {
+                    var veai = JSON.parse(opblack.vendorExtensions);
+                    if (veai.additionalInstructions != null) {
+                        txt +=
+                            '<div class="responses-wrapper">' +
+                            '<div class="opblock-section-header">' +
+                            '<h4><strong>附加说明</strong></h4></div></div>';
+                        txt += '<div  class="plr20px">';
+                        var ais = JSON.parse(veai.additionalInstructions);
+                        for (var a = 0; a < ais.length; a++) {
+                            var ai = ais[a];
+                            txt += '<div>' + ai.title + '</div>';
+                            txt += '<textarea class="focus-border-0px min-height-0 font-weight-normal none_resize" contenteditable="true" readonly="readonly">' + ai.description + '</textarea>';
+                        }
+                        txt += '</div>';
+                    }
+                }
+                //附加说明 end
+
+
                 txt += '</div>';
                 //api-opblock-body end
                 txt += '</div>';
@@ -392,7 +441,6 @@ function loadApiGroupAndApiOpblack(items) {
         //panel-body end
         txt += '</div>';
         //panel end
-
         $("#project_info_APIs_item").append($(txt));
     }
     $("#project_info_APIs_tips").html("");

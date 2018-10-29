@@ -91,7 +91,7 @@ function getResponseParameterTableHtml(typeValue, name, description, items) {
 function getResponseHtml() {
     var id = ("response_tablebody_" + Date.parse(new Date()) + "_" + Math.random()).replace(".", "");
     var html = '<div class="mb10px border1-radius5-pading3 border1px-solid-ccc">' +
-        '<input type="text" class="form-control mb3px" placeholder="状态的基本描述">' +
+        '<input type="text" class="form-control mb3px" placeholder="状态的基本描述,必填">' +
         '<textarea class="form-control none_resize mb3px" rows="3" placeholder="参数的基本描述"></textarea>' +
         '<div class="table-responsive">' +
         '<table class="table table-bordered mb5px">' +
@@ -277,6 +277,7 @@ function showParameterSetModel(obj) {
         console.log(data);
         console.log(id);
     }
+
     var html = getParameterSetModelHtml(type, (data == null ? null : JSON.parse(data)));
     $("#request-parameter-set-modal-body").html($(html));
     document.getElementById("request-parameter-set-modal-confirm").onclick = function () {
@@ -355,7 +356,7 @@ function getParameterAttributeTableHtml(typeValue, name, desc) {
     }
     var nameValue = name == null ? "" : "value='" + name + "'";
     var descValue = desc == null ? "" : "value='" + desc + "'";
-    html += '<td><input type="text" class="form-control" ' + nameValue + ' placeholder="请输入属性的名字"></td>';
+    html += '<td><input type="text" class="form-control" ' + nameValue + ' placeholder="请输入属性的名称"></td>';
     html += '<td><input type="text" class="form-control" ' + descValue + ' placeholder="请输入属性的描述"></td>';
     html += '<td><span class="btn btn-link" onclick="removeParentParent(this)">移除</span></td>';
     html += '</tr>';
@@ -448,11 +449,15 @@ function addResponseParameterToResponseTable(close) {
 }
 /**
  * 添加附加说明
+ * @param title
+ * @param description
  */
-function addAdditionalInstructions() {
+function addAdditionalInstructions(title, description) {
+    var tValue = title == null ? "" : "value='" + title + "'";
+    var cValue = description == null ? "" : description;
     var html = '<div class="border1px-solid-ccc border1-radius5-pading3 mb5px">' +
-        '<input type="text" class="form-control mb3px" placeholder="附加说明标题">' +
-        '<textarea class="form-control none_resize mb3px" rows="3" placeholder="附加说明描述"></textarea>' +
+        '<input type="text" class="form-control mb3px" ' + tValue + ' placeholder="附加说明标题">' +
+        '<textarea class="form-control none_resize mb3px" rows="3" placeholder="附加说明描述">' + cValue + '</textarea>' +
         '<button class="btn btn-link pull-right" onclick="removeParent(this)">移除</button>' +
         '<div class="clearfix"></div>' +
         '</div>';
@@ -560,7 +565,7 @@ function getApiInfo() {
                     ve.min = more.min;
                 }
             }
-            if(more._enum!=null){
+            if (more._enum != null) {
                 var enums = more._enum.replace("，", ",").split(",");
                 var ems = [];
                 for (var emi = 0; emi < enums.length; emi++) {
@@ -569,11 +574,11 @@ function getApiInfo() {
                     }
                 }
                 if (ems.length > 0) {
-                    it.enum=JSON.stringify(ems);
+                    it.enum = JSON.stringify(ems);
                 }
             }
-            if(more.pattern!=null){
-                it.pattern=more.pattern;
+            if (more.pattern != null) {
+                it.pattern = more.pattern;
             }
 
             if (!jQuery.isEmptyObject(ve)) {
@@ -589,9 +594,17 @@ function getApiInfo() {
 
     //响应结果 begin
     var respDivs = $("#response-parameters").children();
+    var responses = [];
     for (var rp = 0; rp < respDivs.length; rp++) {
         var div = respDivs[rp];
         var status = div.children[0].value;
+        console.log(status);
+
+        if (status == '') {
+            continue;
+        }
+        console.log(status == '')
+
         var description = div.children[1].value;
         var trs = div.children[2].children[0].children[1].children;
         var items = [];
@@ -627,9 +640,18 @@ function getApiInfo() {
                 items.push(item);
             }
         }
+        var resp = {};
+        resp.statusCode = status;
+        resp.description = description;
         if (items.length > 0) {
-            data.responses = JSON.stringify(items);
+            var ve = {};
+            ve.parameters = JSON.stringify(items);
+            resp.vendorExtensions = JSON.stringify(ve);
         }
+        responses.push(resp);
+    }
+    if (responses.length > 0) {
+        data.responses = JSON.stringify(responses);
     }
     //响应结果 end
 
@@ -656,4 +678,138 @@ function getApiInfo() {
     return data;
 }
 
+/**
+ * 加载接口要修改的信息
+ * @param aid
+ */
+function loadApiUpdateInfo(aid) {
+    $(".load-api-tips").show();
+    doAJAX(METHOD_GET, 'http://localhost:8686/api/' + aid, null, function (result) {
+        if (result.code == 200) {
+            $(".load-api-tips").hide();
+            console.log('获取接口数据成功');
+            var data = result.data;
+            console.log(data);
+            $("#api_method option[value='" + data.method + "'").attr("selected", true);
+            $("#api_deprecated option[value='" + data.deprecated + "'").attr("selected", true);
+            $("#api_path").val(data.path);
+            $("#api_summary").val(data.summary);
+            if (data.description != null) {
+                $("#api_description").val(data.description);
+            }
+            if (data.consumes != null) {
+                var consumes = JSON.parse(data.consumes);
+                $("#api_consumes").val(consumes.join(','));
+            }
+            if (data.produces != null) {
+                var produces = JSON.parse(data.produces);
+                $("#api_produces").val(produces.join(','));
+            }
+            if (data.parameters != null) {
+                var parm = JSON.parse(data.parameters);
+                for (var p = 0; p < parm.length; p++) {
+                    var required = parm[p].required;
+                    var html = '<tr>';
+                    html += '<td>' + getSelectTureOrFalse(required, (required ? '是' : '否')) + '</td>';
+                    html += '<td>' + getParameterInSelectOptionHtml(parm[p].in) + '</td>';
+                    html += '<td>' + getParameterTypeSelectOptionHtml(parm[p].type) + '</td>';
+                    html += '<td><input type="text" value="' + parm[p].name + '" class="form-control"  placeholder="请输入参数的名字"></td>';
+                    html += '<td><input type="text" value="' + parm[p].description + '" class="form-control"  placeholder="请输入参数的描述"></td>';
+                    var id = ("edit_" + Date.parse(new Date()) + "_" + Math.random()).replace(".", "");
+                    var attr = {};
+
+                    if (parm[p].format != null) {
+                        attr.format = parm[p].format;
+                    }
+                    if (parm[p].default != null) {
+                        attr._default = parm[p].default;
+                    }
+                    if (parm[p].enum != null) {
+                        attr._enum = JSON.parse(parm[p].enum).join(",");
+                    }
+                    if (parm[p].pattern != null) {
+                        attr.pattern = parm[p].pattern;
+                    }
+                    if (parm[p].vendorExtensions != null) {
+                        var ve = parm[p].vendorExtensions;
+                        if (ve.min != null) {
+                            attr.min = ve.min;
+                        }
+                        if (ve.max != null) {
+                            attr.max = ve.max;
+                        }
+                        if (ve.items != null) {
+                            attr.items = ve.items;
+                        }
+                    }
+                    html += '<td><span class="btn btn-link" onclick="showParameterSetModel(this)" id="' + id + '" data=\'' + JSON.stringify(attr) + '\'>编辑</span></td>';
+                    html += '<td><span class="btn btn-link" onclick="removeParentParent(this)">移除</span></td>';
+                    html += '</tr>';
+                    $("#api_parameters_table").append($(html));
+                }
+            }
+
+            if (data.responses != null) {
+                console.log(data.responses);
+                var resp = JSON.parse(data.responses);
+                for (var r = 0; r < resp.length; r++) {
+                    var id = ("response_tablebody_" + Date.parse(new Date()) + "_" + Math.random()).replace(".", "");
+                    var html = '<div class="mb10px border1-radius5-pading3 border1px-solid-ccc">' +
+                        '<input type="text" value="' + resp[r].statusCode + '" class="form-control mb3px" placeholder="状态的基本描述">' +
+                        '<textarea class="form-control none_resize mb3px" rows="3" placeholder="参数的基本描述">' + resp[r].description + '</textarea>' +
+                        '<div class="table-responsive">' +
+                        '<table class="table table-bordered mb5px">' +
+                        '<thead>' +
+                        '<tr>' +
+                        '<th>参数类型</th>' +
+                        '<th>参数名称</th>' +
+                        '<th>参数描述</th>' +
+                        '<th class="text-center">操作</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody id="' + id + '">';
+                    if (resp[r].vendorExtensions != null) {
+                        if (JSON.parse(resp[r].vendorExtensions).parameters != null) {
+                            var ve = JSON.parse(JSON.parse(resp[r].vendorExtensions).parameters);
+                            for (var v = 0; v < ve.length; v++) {
+                                html += getResponseParameterTableHtml(ve[v].type, ve[v].name, ve[v].description, ve[v].items);
+                            }
+                        }
+                    }
+                    html += '</tbody>' +
+                        '</table>' +
+                        '</div>' +
+                        '<button class="pull-right btn-sm btn btn-default mb5px"  onclick="addResponseParameterToResponseTableShow(\'' + id + '\')">添加参数</button>' +
+                        '<div class="clearfix"></div>' +
+                        '</div>';
+                    $("#response-parameters").append($(html));
+                }
+            }
+
+            if (data.vendorExtensions != null) {
+                var ve = JSON.parse(data.vendorExtensions);
+                if (ve.additionalInstructions != null) {
+                    var ais = JSON.parse(ve.additionalInstructions);
+                    for (var a = 0; a < ais.length; a++) {
+                        addAdditionalInstructions(ais[a].title, ais[a].description);
+                    }
+                }
+            }
+
+        } else {
+            $("#load-api-tips-text").text("数据加载失败!!!");
+            console.log("msg:" + result.msg + " ,data:");
+            console.log(result.data);
+            confirm("获取接口数据失败!!!!!!");
+        }
+    }, function (e) {
+        $("#load-api-tips-text").text("数据加载失败!!!");
+        console.log("获取接口数据失败...");
+        console.log(e);
+        var state = e.readyState;
+        if (state == 0) {
+            confirm('获取接口数据需要先启动服务器,请在当前目录双击start.bat');
+        }
+    });
+}
 

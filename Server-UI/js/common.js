@@ -65,6 +65,46 @@ function getUrlParam(name) {
         return "";
     }
 }
+/**
+ * 自适应textarea内容高度
+ */
+function textareaAutoHeight(obj) {
+    if (obj != null) {
+        $(obj).find('textarea').each(function () {
+            this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;');
+        })
+    } else {
+        $('textarea').each(function () {
+            this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;');
+        })
+    }
+}
+/**
+ * 获得select的是或者否
+ * @param value option的值
+ * @param txt option显示的文字,如果文字为空则value代替
+ * @returns {string}
+ */
+function getSelectTureOrFalse(value,txt) {
+    var html = '<select class="form-control">';
+    if (value != null) {
+        html += '<option value="' + value + '">';
+        if (txt != null) {
+            html += txt;
+        } else {
+            html += value;
+        }
+        html += '</option>';
+    }
+    if (value != 'true') {
+        html += '<option value="true">是</option>';
+    }
+    if (value != 'false') {
+        html += '<option value="false">否</option>';
+    }
+    html += '</select>';
+    return html;
+}
 
 /**
  * 获得参数位置的select option 字符串,
@@ -75,7 +115,7 @@ function getUrlParam(name) {
 function getParameterInSelectOptionHtml(value, txt) {
     var html = '<select class="form-control">';
     if (value != null) {
-        html += '<option value="'+value+'">';
+        html += '<option value="' + value + '">';
         if (txt != null) {
             html += txt;
         } else {
@@ -104,10 +144,10 @@ function getParameterInSelectOptionHtml(value, txt) {
  * @param txt option显示的文字,如果文字为空则value代替
  * @returns {string}
  */
-function getParameterTypeSelectOptionHtml(value,txt) {
+function getParameterTypeSelectOptionHtml(value, txt) {
     var html = '<select class="form-control">';
     if (value != null) {
-        html += '<option value="'+value+'">';
+        html += '<option value="' + value + '">';
         if (txt != null) {
             html += txt;
         } else {
@@ -151,7 +191,7 @@ function getParameterTypeSelectOptionHtml(value,txt) {
  * @param obj 传对象的this
  */
 function removeParent(obj) {
-    if(confirm('确定移除该行数据吗?')) {
+    if (confirm('确定移除该行数据吗?')) {
         $(obj).parent().remove();
     }
 }
@@ -161,7 +201,7 @@ function removeParent(obj) {
  * @param obj 传对象的this
  */
 function removeParentParent(obj) {
-    if(confirm('确定移除该行数据吗?')) {
+    if (confirm('确定移除该行数据吗?')) {
         $(obj).parent().parent().remove();
     }
 }
