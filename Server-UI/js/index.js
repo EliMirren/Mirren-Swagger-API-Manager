@@ -73,8 +73,13 @@ function requestProject(id) {
 function loadProject(id) {
     $("#project_info_body").html('<h1 class="page-header">信息加载中...</h1>');
     getProject(id, function (data) {
-        loadProjectInfo(data);//加载项目信息
-        loadApiGroup(id);//加载分组信息
+        try {
+            loadProjectInfo(data);//加载项目信息
+            loadApiGroup(id);//加载分组信息
+        } catch (e) {
+            $("#project_info_body").html('<h1 class="page-header">点击项目列表加载项目信息</h1>');
+            console.log(e)
+        }
     });
 }
 /**

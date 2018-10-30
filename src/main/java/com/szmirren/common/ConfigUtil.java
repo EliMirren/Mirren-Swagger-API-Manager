@@ -347,6 +347,7 @@ public class ConfigUtil {
 		String sql = String.format("delete from project where %s = ? ", ProjectColumns.KEY);
 		update(sql, params);
 	}
+	
 	/**
 	 * 获取指定项目的所有分组
 	 * 
@@ -406,6 +407,40 @@ public class ConfigUtil {
 		}
 	}
 
+	/**
+	 * 获取指定项目的所有接口分组
+	 * 
+	 * @param groupId
+	 *          分组的id
+	 * @return
+	 */
+	public static List<ProjectApiGroup> getProjectApiGroups(String projectId) throws Throwable {
+		String sql = String.format("select * from project_api_group where %s=?", ApiGroupColumns.PROJECT_ID);
+		FunctionResult<List<ProjectApiGroup>> execute = query(sql, StringUtil.asList(projectId), res -> {
+			List<ProjectApiGroup> result = new ArrayList<>();
+			try {
+				while (res.next()) {
+					ProjectApiGroup group = new ProjectApiGroup();
+					group.setGroupId(res.getString(ApiGroupColumns.GROUP_ID));
+					group.setProjectId(res.getString(ApiGroupColumns.PROJECT_ID));
+					group.setName(res.getString(ApiGroupColumns.NAME));
+					group.setSummary(res.getString(ApiGroupColumns.SUMMARY));
+					group.setDescription(res.getString(ApiGroupColumns.DESCRIPTION));
+					group.setExternalDocs(res.getString(ApiGroupColumns.EXTERNAL_DOCS));
+					group.setVendorExtensions(res.getString(ApiGroupColumns.VENDOR_EXTENSIONS));
+					result.add(group);
+				}
+				return new FunctionResult<>(result);
+			} catch (SQLException e) {
+				return new FunctionResult<>(e);
+			}
+		});
+		if (execute.succeeded()) {
+			return execute.result();
+		} else {
+			throw execute.cause();
+		}
+	}
 	/**
 	 * 获取指定接口分组的数据
 	 * 

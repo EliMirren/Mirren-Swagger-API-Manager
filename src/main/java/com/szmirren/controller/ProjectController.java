@@ -2,6 +2,8 @@ package com.szmirren.controller;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -65,6 +67,14 @@ public class ProjectController {
 	@DeleteMapping(value = "/project/{id}", produces = {"application/json;charset=UTF-8"})
 	public Map<String, Object> postProject(@PathVariable(value = "id") String id) {
 		return proService.deleteProject(id);
+	}
+	@GetMapping(value = "/project/downJson/{id}")
+	public void downProject(HttpServletResponse response, @PathVariable(value = "id") String id) {
+		proService.downSwaggerJson(response, id);
+	}
+	@GetMapping(value = "/project/getJson/{id}", produces = {"application/json;charset=UTF-8"})
+	public String getProjectJson(@PathVariable(value = "id") String id) {
+		return proService.getSwaggerJson(id);
 	}
 
 }

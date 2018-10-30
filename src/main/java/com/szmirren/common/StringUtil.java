@@ -3,10 +3,10 @@ package com.szmirren.common;
 import java.sql.Date;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
-import org.assertj.core.util.Arrays;
 
 /**
  * 字符串工具
@@ -112,6 +112,42 @@ public class StringUtil {
 	 */
 	public static String[] asStrArray(String... str) {
 		return str;
+	}
+	/**
+	 * 创建一个List<Object>
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	public static List<String> asListString(String obj) {
+		List<String> result = new ArrayList<>();
+		result.add(obj);
+		return result;
+	}
+	/**
+	 * 创建一个List<Object>
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	public static List<String> asListString(String... obj) {
+		List<String> result = new ArrayList<>();
+		for (String string : obj) {
+			result.add(string);
+		}
+		return result;
+	}
+
+	/**
+	 * 创建一个List<Object>
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	public static List<Object> asList(Object obj) {
+		List<Object> result = new ArrayList<>();
+		result.add(obj);
+		return result;
 	}
 	/**
 	 * 创建一个List<Object>

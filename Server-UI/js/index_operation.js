@@ -70,7 +70,8 @@ function loadProjectInfo(data) {
         }
     }
     txt += '</h1>';
-    txt+='<a class="btn btn-primary" href="http://localhost:8686/project/down/'+data.key+'">将项目转为Swagger_2.0 .Json文件并下载</a>';
+    txt+='<a class="btn btn-primary" href="http://localhost:8686/project/downJson/'+data.key+'">将项目转为Swagger_2.0 .Json文件并下载</a>';
+    txt+='<a class="btn btn-link" href="http://localhost:8686/project/getJson/'+data.key+'" target="_blank">在线查看</a>';
     txt += '<h3>主机地址: <span>' + data.host + '</span></h3>';
     if (data.basePath != null) {
         txt += '<h4>Base URL: <span' + data.basePath + '</span></h4>';

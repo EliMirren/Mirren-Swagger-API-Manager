@@ -6,7 +6,7 @@
 
 	<groupId>com.szmirren</groupId>
 	<artifactId>Mirren-Swagger-API-Manager</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>Mirren-Swagger-API-Manager</name>
@@ -57,14 +57,47 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20180813</version>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<outputDirectory>${project.build.directory}/MSAM/</outputDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<resources>
+						<resource>
+							<directory>src/main/resources/</directory>
+						</resource>
+						<resource>
+							<directory>${basedir}/resources</directory>
+							<targetPath>${project.build.directory}/MSAM/</targetPath>
+						</resource>
+						<resource>
+							<directory>${basedir}/Server-UI</directory>
+							<filtering>true</filtering>
+							<excludes>
+								<exclude>.idea/**</exclude>
+							</excludes>
+							<targetPath>${project.build.directory}/MSAM/Server-UI</targetPath>
+						</resource>
+					</resources>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -1,18 +1,27 @@
 package com.szmirren.service.impl;
 
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Service;
 
 import com.szmirren.common.ConfigUtil;
 import com.szmirren.common.ResultUtil;
 import com.szmirren.common.StringUtil;
+import com.szmirren.common.SwaggerConverter;
 import com.szmirren.entity.Project;
 import com.szmirren.entity.ProjectApi;
 import com.szmirren.entity.ProjectApiGroup;
 import com.szmirren.entity.ProjectInfo;
 import com.szmirren.service.ProjectService;
+
+import io.swagger.models.Swagger;
+import io.swagger.util.Json;
 @Service
 public class DefaultProjectServiceImpl implements ProjectService {
 
@@ -203,4 +212,51 @@ public class DefaultProjectServiceImpl implements ProjectService {
 		}
 	}
 
+	@Override
+	public String getSwaggerJson(String pid) {
+		try {
+			Project project = ConfigUtil.getProject(pid);
+			Swagger swagger = new Swagger();
+			swagger.setSwagger(project.getSwagger());
+			swagger.setInfo(SwaggerConverter.toInfo(project));
+			swagger.setHost(project.getHost());
+			swagger.setBasePath(project.getBasePath());
+			List<ProjectApiGroup> projectApiGroupList = ConfigUtil.getProjectApiGroupList(pid);
+			SwaggerConverter.toTagsAndPaths(swagger, projectApiGroupList);
+			swagger.setSchemes(SwaggerConverter.toSchemes(project));
+			swagger.setConsumes(SwaggerConverter.toConsumes(project));
+			swagger.setProduces(SwaggerConverter.toProduces(project));
+			swagger.setSecurity(SwaggerConverter.toSecurity(project));
+			swagger.setSecurityDefinitions(SwaggerConverter.toSecurityDefinitions(project));
+			swagger.setDefinitions(SwaggerConverter.toDefinitions(project));
+			swagger.setParameters(SwaggerConverter.toParameters(project));
+			swagger.setResponses(SwaggerConverter.toResponse(project));
+			swagger.setExternalDocs(SwaggerConverter.toExternalDocs(project));
+			swagger.setVendorExtensions(SwaggerConverter.toVendorExtensions(project));
+			String pretty = Json.pretty(swagger);
+			return pretty;
+		} catch (Throwable e) {
+			e.printStackTrace();
+			String msg = e == null ? "无法追踪错误" : e.getMessage();
+			return "{\"error\":\"" + msg + "\"}";
+		}
+
+	}
+
+	@Override
+	public void downSwaggerJson(HttpServletResponse response, String pid) {
+		try {
+			response.setContentType("application/force-download;charset=UTF-8");
+			String time = LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+			String fileName = "MSAM_Swagger" + time + ".json";
+			response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);
+			String swagger = getSwaggerJson(pid);
+			try (PrintWriter writer = response.getWriter()) {
+				String pretty = Json.pretty(swagger);
+				writer.write(pretty);
+			}
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
 }

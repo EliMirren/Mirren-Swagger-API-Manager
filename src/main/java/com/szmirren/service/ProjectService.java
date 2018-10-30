@@ -8,6 +8,8 @@ package com.szmirren.service;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.szmirren.entity.Project;
 import com.szmirren.entity.ProjectApi;
 import com.szmirren.entity.ProjectApiGroup;
@@ -114,5 +116,22 @@ public interface ProjectService {
 	 * @return
 	 */
 	Map<String, Object> deleteApi(String apiId);
+
+	/**
+	 * 获得Swagger的JSON字符串
+	 * 
+	 * @param projectId
+	 * @return
+	 */
+	String getSwaggerJson(String projectId);
+
+	/**
+	 * 下载Swagger的JSON文件
+	 * 
+	 * @param response
+	 * @param projectId
+	 *          项目的id
+	 */
+	void downSwaggerJson(HttpServletResponse response, String projectId);
 
 }

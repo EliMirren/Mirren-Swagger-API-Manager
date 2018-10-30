@@ -2,7 +2,7 @@
  * Created by Mirren on 2018/10/22.
  */
 /**是否处于调试模式*/
-const IS_DEBUG_ENABLED = true;
+const IS_DEBUG_ENABLED = false;
 
 /**请求方法GET*/
 const METHOD_GET = "get";
