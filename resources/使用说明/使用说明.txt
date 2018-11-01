@@ -1,0 +1,7 @@
+免JDK说明:
+1.下载一个java1.8.0以上的jre下载地址https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+2.将下载的jre放在MSAM根目录的runtime文件夹中(没有runtime就创建),(Mac版从Contents开始,Linux版与Windows版从jrex.x.x开始,去掉x.x.x)
+3.
+linux:复制linuxStart.sh到MSAM目录(与.jar同级),双击.sh文件启动
+mac:复制macStart.sh到MSAM目录(与.jar同级),双击.sh文件启动
+Windows:复制windowStart.bat到MSAM目录(与.jar同级),双击.bat文件启动

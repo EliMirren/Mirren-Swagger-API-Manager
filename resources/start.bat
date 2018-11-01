@@ -1,0 +1,1 @@
+java -jar Mirren-Swagger-API-Manager.jar
