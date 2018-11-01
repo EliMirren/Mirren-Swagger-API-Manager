@@ -30,6 +30,17 @@ MSAM以项目-接口分组-接口三个单位,项目最终生成的结果理论�
 ## 拓展与二次开发
 数据库里面定义了项目,接口分组,以及接口三张表,属性对应Swagger的Swagger,Tags,Operation这三个类,前端操作需要将Json类型转换为String类型
 
+## 使用说明
+- 第一步启动Mirren-Swagger-API-Manager.jar(start.bat / start.sh)
+- 第二步访问Server-UI-index.html
+- 第三步新建项目,输入项目信息后确定创建项目
+- 第四步在项目列表中点击项目
+- 第五步新建接口
+- 第六步新建接口
+- 第七步在项目信息中选择将项目转为Swagger_2.0 .Json文件并下载或在线查看获得文件路径
+- 第八步访问Client-UI-index.html
+- 第九步打开保存的文件,或者输入文件路径加载数据
+
 ## 界面展示
 
 ### Server-UI
