@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="VX-API-Gateway - VX-API-Gateway是基于Vert.x(java)开发的全异步API网关,集高性能与自由于一身!">
+    <meta name="keywords"
+          content="HTML, CSS, JS, JavaScript, framework, bootstrap, front-end, frontend, web development">
+    <title>MSAM-Client-UI</title>
+    <!-- Bootstrap core CSS -->
+    <style class="anchorjs"></style>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Documentation extras -->
+    <link href="css/docs.min.css" rel="stylesheet">
+    <link href="css/patch.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
+    <script src="js/ie-emulation-modes-warning.js"></script>
+    <!--[if lt IE 9]>
+    <script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" href="https://github.com/shenzhenMirren/MyGithubResources/blob/master/image/MSAM.png">
+    <link rel="icon" href="https://raw.githubusercontent.com/shenzhenMirren/MyGithubResources/master/image/MSAM.ico">
+</head>
+<body id="top">
+<!--导航与项目描述-->
+<div class="bs-docs-header padding-top-10px padding-bottom-15px margin-bottom-10px" tabindex="-1">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-1">
+                <a class="navbar-brand color-orange"
+                   href="https://github.com/EliMirren/Mirren-Swagger-API-Manager" target="_blank">MSAM</a>
+            </div>
+            <div class="col-md-11">
+                <div class="input-group margin-top-10px width-85per">
+                    <input type="text" id="project_json_url" class="form-control"
+                           value=""
+                           placeholder="请输入Json文件所在的URL">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default" onclick="getPojectAndLoad()">加载数据</button>
+                        <button type="button" class="btn btn-default"
+                                onclick="javascript:$('#hide-load-file').click();">从本地加载文件
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <input type="file" style="display: none" accept=".json,.txt" id="hide-load-file"
+                           onchange="getProjectFileAndLoad()">
+                </div>
+                <div id="msam-project-info-top"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--项目基本信息-->
+<div class="container padding-bottom-30px">
+    <div id="msam-project-info-main" class="font-size-22px"><h1 class="text-center">请在上方输入框中输入Json文件的路径并加载数据</h1></div>
+</div>
+<!--接口信息-->
+<div class="container bs-docs-container">
+    <div class="col-md-9" id="api-dosc-main"></div>
+    <!--分组定位信息-->
+    <div class="col-md-3" role="complementary">
+        <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix-top">
+            <ul class="nav bs-docs-sidenav" id="api-group-main">
+            </ul>
+            <a class="back-to-top" href="#top">
+                返回顶部
+            </a>
+        </nav>
+    </div>
+</div>
+<input type="text" id="copy-temp-input" style="border: 0;position: fixed;width: 1px" value="">
+<!--提示面板-->
+<div id="tips-panel" class="display-none"></div>
+
+<!--测试运行效果的静态框-->
+<div class="modal fade bs-example-modal-lg " id="try-it-out-modal" tabindex="-1" role="dialog" aria-hidden="true"
+     data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><span id="api-group-model-title"></span></h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="try_it_out_method">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label for="try_it_out_url" class="col-sm-2 control-label">URL:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="try_it_out_url" placeholder="请求的路径">
+                        </div>
+                    </div>
+                    <div class="form-group" id="try_it_out_consumes_box">
+                        <label for="try_it_out_consumes" class="col-sm-2 control-label">Consumes:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="try_it_out_consumes"></select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="try_it_out_produces_box">
+                        <label for="try_it_out_produces" class="col-sm-2 control-label">Produces:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="try_it_out_produces"></select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="try_it_out_parameter_box">
+                        <label class="col-sm-2 control-label">请求参数:</label>
+                        <div class="col-sm-10" id="try_it_out_parameter_tips">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>参数位置</th>
+                                        <th>参数名称</th>
+                                        <th>参数值</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="try_it_out_parameter">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group display-none" id="try_it_out_response_box">
+                        <label for="try_it_out_response" class="col-sm-2 control-label">响应结果:</label>
+                        <div class="col-sm-10">
+                            <pre id="try_it_out_response"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="update-api-group-btn" onclick="tryItOutApi()">
+                    执行请求
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- lib -->
+<script src="js/jquery.js"></script>
+<script>window.jQuery || document.write('<script src="js/jquery.js"><\/script>')</script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/docs.js"></script>
+<script src="js/ie10-viewport-bug-workaround.js"></script>
+<script src="js/clipboard.js"></script>
+<!--js-->
+<script type="text/javascript" src="js/format-json-xml.js"></script>
+<script type="text/javascript" src="js/and.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+
+</body>
+</html>

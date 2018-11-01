@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.szmirren.entity.MsamOperation;
 import com.szmirren.entity.MsamParameter;
+import com.szmirren.entity.MsamPath;
 import com.szmirren.entity.MsamResponse;
 import com.szmirren.entity.Project;
 import com.szmirren.entity.ProjectApi;
@@ -216,11 +217,6 @@ public interface SwaggerConverter {
 			if (object.has("additionalInstructions")) {
 				Map<String, Object> veMap = new LinkedHashMap<>();
 				JSONArray array = new JSONArray(object.getString("additionalInstructions"));
-				List<Object> list = new ArrayList<>();
-				for (int i = 0; i < array.length(); i++) {
-					list.add(array.get(i));
-					list.add(new JSONObject().put("sdf", "asdf"));
-				}
 				veMap.put("x-additionalInstructions", array);
 				operation.vendorExtensions(veMap);
 			}
@@ -249,8 +245,8 @@ public interface SwaggerConverter {
 			tags.add(toTag(group));
 			List<ProjectApi> apis = group.getApis();
 			for (ProjectApi api : apis) {
-				Path path = new Path();
-				path.setGet(toOperation(group.getName(), api));
+				Path path = new MsamPath();
+				path.set(api.getMethod(), toOperation(group.getName(), api));
 				paths.put(api.getPath(), path);
 			}
 		}

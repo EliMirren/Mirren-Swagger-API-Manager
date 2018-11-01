@@ -92,7 +92,7 @@ function getResponseHtml() {
     var id = ("response_tablebody_" + Date.parse(new Date()) + "_" + Math.random()).replace(".", "");
     var html = '<div class="mb10px border1-radius5-pading3 border1px-solid-ccc">' +
         '<input type="text" class="form-control mb3px" placeholder="状态的基本描述,必填">' +
-        '<textarea class="form-control none_resize mb3px" rows="3" placeholder="参数的基本描述"></textarea>' +
+        '<textarea class="form-control  mb3px" rows="3" placeholder="参数的基本描述"></textarea>' +
         '<div class="table-responsive">' +
         '<table class="table table-bordered mb5px">' +
         '<thead>' +
@@ -217,7 +217,7 @@ function getParameterSetModelHtml(type, data) {
     html += '<div class="form-group">' +
         '<label for="api_parameter_attribute_default" class="col-sm-2 control-label">默认值:</label>' +
         '<div class="col-sm-10">' +
-        '<input type="text" class="form-control none_resize"' + defaultValue + ' id="api_parameter_attribute_default" placeholder="请输入默认值">' +
+        '<input type="text" class="form-control "' + defaultValue + ' id="api_parameter_attribute_default" placeholder="请输入默认值">' +
         '</div>' +
         '</div>';
     //默认值 end
@@ -227,7 +227,7 @@ function getParameterSetModelHtml(type, data) {
     html += '<div class="form-group ">' +
         '<label for="api_parameter_attribute_enum" class="col-sm-2 control-label">枚举值:</label>' +
         '<div class="col-sm-10">' +
-        '<input type="text" class="form-control none_resize" ' + enumValue + ' id="api_parameter_attribute_enum" placeholder="请输入枚举值,多个值以英文,号隔开">' +
+        '<input type="text" class="form-control " ' + enumValue + ' id="api_parameter_attribute_enum" placeholder="请输入枚举值,多个值以英文,号隔开">' +
         '</div>' +
         '</div>';
     //枚举值 end
@@ -252,7 +252,7 @@ function getParameterSetModelHtml(type, data) {
     html += '<div class="form-group ' + (hideMinMaxPat == true ? "display-none" : "") + '" id="api-parameter-attribute-pattern-box">' +
         '<label class="col-sm-2 control-label">正则表达式:</label>' +
         '<div class="col-sm-10">' +
-        '<textarea class="form-control none_resize" id="api_parameter_attribute_pattern" rows="3" placeholder="请输入正则表达式">' + patternValue + '</textarea>' +
+        '<textarea class="form-control " id="api_parameter_attribute_pattern" rows="3" placeholder="请输入正则表达式">' + patternValue + '</textarea>' +
         '</div>' +
         '</div>';
     //正则表达式 end
@@ -457,7 +457,7 @@ function addAdditionalInstructions(title, description) {
     var cValue = description == null ? "" : description;
     var html = '<div class="border1px-solid-ccc border1-radius5-pading3 mb5px">' +
         '<input type="text" class="form-control mb3px" ' + tValue + ' placeholder="附加说明标题">' +
-        '<textarea class="form-control none_resize mb3px" rows="3" placeholder="附加说明描述">' + cValue + '</textarea>' +
+        '<textarea class="form-control  mb3px" rows="3" placeholder="附加说明描述">' + cValue + '</textarea>' +
         '<button class="btn btn-link pull-right" onclick="removeParent(this)">移除</button>' +
         '<div class="clearfix"></div>' +
         '</div>';
@@ -756,7 +756,7 @@ function loadApiUpdateInfo(aid) {
                     var id = ("response_tablebody_" + Date.parse(new Date()) + "_" + Math.random()).replace(".", "");
                     var html = '<div class="mb10px border1-radius5-pading3 border1px-solid-ccc">' +
                         '<input type="text" value="' + resp[r].statusCode + '" class="form-control mb3px" placeholder="状态的基本描述">' +
-                        '<textarea class="form-control none_resize mb3px" rows="3" placeholder="参数的基本描述">' + resp[r].description + '</textarea>' +
+                        '<textarea class="form-control  mb3px" rows="3" placeholder="参数的基本描述">' + resp[r].description + '</textarea>' +
                         '<div class="table-responsive">' +
                         '<table class="table table-bordered mb5px">' +
                         '<thead>' +
