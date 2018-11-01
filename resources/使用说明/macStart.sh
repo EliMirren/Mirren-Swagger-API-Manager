@@ -5,5 +5,5 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
   [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )" 
-set path = Contents/Home/bin
+set path = runtime/Contents/Home/bin
 java -jar $DIR/Mirren-Swagger-API-Manager.jar
