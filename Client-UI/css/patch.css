@@ -1,0 +1,18 @@
+body {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+.bs-example:after {
+	content: "实例：" !important;
+}
+
+.bs-docs-section > p, .bs-docs-section > ul, 
+.bs-docs-section > ol, .bs-callout > p, 
+.bs-callout > ol, .bs-callout > ul {
+	line-height: 1.75;
+	margin-bottom: 1.2em;
+}
+
+.bs-callout *:last-child {
+	margin-bottom: 0;
+}

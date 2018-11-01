@@ -1,0 +1,432 @@
+body {
+    font-size: 16px;
+}
+
+.font-size-12px {
+    font-size: 12px !important;
+}
+
+.font-size-14px {
+    font-size: 14px !important;
+}
+
+.font-size-16px {
+    font-size: 16px !important;
+}
+
+.font-size-18px {
+    font-size: 18px !important;
+}
+
+.font-size-20px {
+    font-size: 20px !important;
+}
+
+.font-size-22px {
+    font-size: 22px !important;
+}
+
+.font-size-24px {
+    font-size: 24px !important;
+}
+
+.font-weight-normal {
+    font-weight: normal !important;
+}
+
+.none_resize {
+    resize: none;
+}
+.min-height-0 {
+    min-height: 0 !important;
+}
+
+.color-orange {
+    color: orange !important;
+}
+
+.background-color-transparent {
+    background-color: transparent !important;
+}
+
+.background-color-white {
+    background-color: white;
+}
+
+.radius5px {
+    border-radius: 5px;
+}
+
+.border-0 {
+    border: 0 !important;
+}
+
+.border-1px-solid-ccc {
+    border: 1px solid #ccc !important;
+}
+
+.border-1px-solid-orange-bc-transparent {
+    border: 1px solid orange !important;
+    background-color: transparent;
+}
+
+.margin-bottom-0 {
+    margin-bottom: 0 !important;
+}
+
+.margin-bottom-10px {
+    margin-bottom: 10px !important;
+}
+
+.margin-bottom-20px {
+    margin-bottom: 20px !important;
+}
+
+.margin-top-3px {
+    margin-top: 3px !important;
+}
+
+.margin-top-5px {
+    margin-top: 5px !important;
+}
+
+.margin-top-10px {
+    margin-top: 10px !important;
+}
+
+.mleft10px {
+    margin-left: 10px;
+}
+
+.mb5px {
+    margin-bottom: 5px;
+}
+
+.padding-bottom-10px {
+    padding-bottom: 10px !important;
+}
+
+.padding-bottom-15px {
+    padding-bottom: 15px !important;
+}
+
+.padding-bottom-20px {
+    padding-bottom: 20px !important;
+}
+
+.padding-bottom-30px {
+    padding-bottom: 30px !important;
+}
+
+.padding-top-0 {
+    padding-top: 0 !important;
+}
+
+.padding-top-5px {
+    padding-top: 5px !important;
+}
+
+.padding-top-10px {
+    padding-top: 10px !important;
+}
+
+.padding-top-30px {
+    padding-top: 30px !important;
+}
+
+.pd5px10px {
+    padding: 5px 10px !important;
+}
+
+.width-20per {
+    width: 20% !important;
+}
+
+.width-40per {
+    width: 40% !important;
+}
+
+.width-60per {
+    width: 60% !important;
+}
+
+.width-80per {
+    width: 80% !important;
+}
+
+.width-85per {
+    width: 85% !important;
+}
+
+.width-90per {
+    width: 90% !important;
+}
+.width-100per {
+    width: 100% !important;
+}
+
+.inline-block {
+    display: inline-block !important;
+}
+
+.to-black {
+    display: block;
+}
+
+.point {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #333;
+    margin-right: 10px;
+}
+
+.to-space-tag-2em {
+    display: inline-block;
+    width: 2em;
+}
+
+#tips-panel {
+    width: auto;
+    min-width: 200px;
+    height: 80px;
+    background-color: black;
+    position: fixed;
+    top: 100px;
+    left: 40%;
+    z-index: 9999;
+    color: white;
+    opacity: 0.6;
+    text-align: center;
+    font-size: 20px;
+    line-height: 80px;
+    border-radius: 5px;
+}
+
+.display-none {
+    display: none;
+}
+
+.-deprecated {
+    text-decoration: line-through !important;
+}
+
+.api-body {
+    border: 1px solid #3b4151;
+    margin-bottom: 50px;
+}
+
+.api-body-deprecated {
+    border: 1px solid #E9E9E9 !important;
+    margin-bottom: 50px;
+}
+
+.api-body-post {
+    border: 1px solid #49cc90;
+}
+
+.api-body-get {
+    border: 1px solid #61AFFE;
+}
+
+.api-body-put {
+    border: 1px solid #FCA130;
+}
+
+.api-body-delete {
+    border: 1px solid #F93E3E;
+}
+
+.api-body-head {
+    border: 1px solid #9012FE;
+}
+
+.api-body-options {
+    border: 1px solid #0D5AA7;
+}
+
+.api-body-patch {
+    border: 1px solid #50E3C2;
+}
+
+.api-body-trace {
+    border: 1px solid #ffa8be;
+}
+
+.api-body-connect {
+    border: 1px solid #83BB83;
+}
+
+.api-item {
+    padding: 5px;
+    border-bottom: 1px solid #F7F7F7;
+}
+
+.api-item .api-item-sub {
+    padding: 3px;
+}
+
+.api-body .api-body-method {
+    background-color: #3b4151;
+    font-size: 22px;
+    color: white;
+}
+
+.api-body-method-deprecated {
+    background-color: #E9E9E9 !important;
+    font-size: 22px;
+    color: white;
+}
+
+.api-body .method-post {
+    background-color: #49cc90;
+}
+
+.api-body .method-get {
+    background-color: #61AFFE;
+}
+
+.api-body .method-put {
+    background-color: #FCA130;
+}
+
+.api-body .method-delete {
+    background-color: #F93E3E;
+}
+
+.api-body .method-head {
+    background-color: #9012FE;
+}
+
+.api-body .method-options {
+    background-color: #0D5AA7;
+}
+
+.api-body .method-patch {
+    background-color: #50E3C2;
+}
+
+.api-body .method-trace {
+    background-color: #ffa8be;
+}
+
+.api-body .method-connect {
+    background-color: #83BB83;
+}
+
+.api-body .api-body-follow {
+    background-color: #f7f7f7;
+}
+
+.api-body-follow-deprecated {
+    background-color: #FDFDFD !important;
+}
+
+.api-body .follow-post {
+    background-color: #E8F6F0;
+}
+
+.api-body .follow-get {
+    background-color: #EBF3FB;
+}
+
+.api-body .follow-put {
+    background-color: #FBF1E6;
+}
+
+.api-body .follow-delete {
+    background-color: #FAE7E7;
+}
+
+.api-body .follow-head {
+    background-color: #F4E7FF;
+}
+
+.api-body .follow-options {
+    background-color: #E6EEF6;
+}
+
+.api-body .follow-patch {
+    background-color: #EDFCF9;
+}
+
+.api-body .follow-trace {
+    background-color: #ffe9e6;
+}
+
+.api-body .follow-connect {
+    background-color: #e6f6f1;
+}
+
+.api-body .api-body-explain {
+    resize: none;
+    border: 0;
+    width: 100%;
+    min-height: 0;
+    background-color: #f7f7f7;
+}
+
+.api-body-explain-deprecated {
+    resize: none;
+    border: 0;
+    min-height: 0;
+    width: 100%;
+    background-color: #FDFDFD !important;
+}
+
+.api-body .explain-post {
+    background-color: #E8F6F0;
+}
+
+.api-body .explain-get {
+    background-color: #EBF3FB;
+}
+
+.api-body .explain-put {
+    background-color: #FBF1E6;
+}
+
+.api-body .explain-delete {
+    background-color: #FAE7E7;
+}
+
+.api-body .explain-head {
+    background-color: #F4E7FF;
+}
+
+.api-body .explain-options {
+    background-color: #E6EEF6;
+}
+
+.api-body .explain-patch {
+    background-color: #EDFCF9;
+}
+
+.api-body .explain-trace {
+    background-color: #ffe9e6;
+}
+
+.api-body .explain-connect {
+    background-color: #e6f6f1;
+}
+
+.url-copy {
+    display: inline-block;
+    border: 1px solid #777;
+    padding: 3px 8px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 3px;
+    margin-right: 5px;
+}
+
+
+
+
+
+
+
+
+
+

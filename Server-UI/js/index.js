@@ -7,7 +7,7 @@
  * @param complete 加载完成事件
  */
 function loadProjectList(complete) {
-    doAJAX(METHOD_GET, 'http://localhost:8686/project', null, function (result) {
+    doAJAX(METHOD_GET, SERVER_HOST + '/project', null, function (result) {
         if (result.code == 200) {
             var data = result.data;
             for (var i = 0; i < data.length; i++) {
@@ -36,7 +36,7 @@ function loadProjectList(complete) {
  * @param id
  */
 function getProject(id, res) {
-    doAJAX(METHOD_GET, 'http://localhost:8686/project/' + id, null, function (result) {
+    doAJAX(METHOD_GET, SERVER_HOST + '/project/' + id, null, function (result) {
         if (result.code == 200) {
             return res(result.data);
         } else {
@@ -90,7 +90,7 @@ function loadApiGroup(projectId) {
     if (projectId == null || projectId == '') {
         alert('项目的id不能为空!');
     }
-    doAJAX(METHOD_GET, 'http://localhost:8686/project/apiGroup/' + projectId, null, function (result) {
+    doAJAX(METHOD_GET, SERVER_HOST + '/project/apiGroup/' + projectId, null, function (result) {
         if (result.code == 200) {
             console.log('加载项目接口分组成功!');
             loadApiGroupAndApiOpblack(result.data);
@@ -208,7 +208,7 @@ function createProject() {
         console.log(swagger);
     }
     //调用Index的doAJAX
-    doAJAX(METHOD_POST, 'http://localhost:8686/project', swagger, function (result) {
+    doAJAX(METHOD_POST, SERVER_HOST + '/project', swagger, function (result) {
         if (result.code == 200) {
             if (confirm('创建成功!是否继续创建?')) {
                 window.location.reload();
@@ -299,7 +299,7 @@ function updateProject() {
     swagger.key = $("#project_id").val();
     //如果还有更多属性,可以在这里获取相应的属性,后添加到swagger中
     //调用Index的doAJAX
-    doAJAX(METHOD_PUT, 'http://localhost:8686/project', swagger, function (result) {
+    doAJAX(METHOD_PUT, SERVER_HOST + '/project', swagger, function (result) {
         if (result.code == 200) {
             console.log("修改成功");
             self.location = "./index.html?pid=" + swagger.key;
@@ -325,7 +325,7 @@ function updateProject() {
  */
 function deletProject(id) {
     if (confirm('确定删除该项目吗?')) {
-        doAJAX(METHOD_DELETE, 'http://localhost:8686/project/' + id, null, function (result) {
+        doAJAX(METHOD_DELETE, SERVER_HOST + '/project/' + id, null, function (result) {
             if (result.code == 200) {
                 console.log("删除成功");
                 location.reload();
@@ -389,7 +389,7 @@ function createApiGroup() {
         alert('分组的名称与简介为必填项!');
         return;
     }
-    doAJAX(METHOD_POST, 'http://localhost:8686/apiGroup', group, function (result) {
+    doAJAX(METHOD_POST, SERVER_HOST + '/apiGroup', group, function (result) {
         if (result.code == 200) {
             console.log('新增分组成功');
             location.reload();
@@ -413,7 +413,7 @@ function createApiGroup() {
  * @param id
  */
 function loadUpdateApiGroup(id) {
-    doAJAX(METHOD_GET, 'http://localhost:8686/apiGroup/' + id, null, function (result) {
+    doAJAX(METHOD_GET, SERVER_HOST + '/apiGroup/' + id, null, function (result) {
         if (result.code == 200) {
             console.log('加载接口分组修改数据成功!');
             if (IS_DEBUG_ENABLED) {
@@ -454,7 +454,7 @@ function updateApiGroup() {
     if (IS_DEBUG_ENABLED) {
         console.log(group);
     }
-    doAJAX(METHOD_PUT, 'http://localhost:8686/apiGroup', group, function (result) {
+    doAJAX(METHOD_PUT, SERVER_HOST + '/apiGroup', group, function (result) {
         if (result.code == 200) {
             console.log('修改接口分组修改数据成功!');
             refreshApiGroupInfo(group);
@@ -478,7 +478,7 @@ function updateApiGroup() {
  */
 function deleteApiGroup(id) {
     if (confirm('确定删除该接口分组?')) {
-        doAJAX(METHOD_DELETE, 'http://localhost:8686/apiGroup/' + id, null, function (result) {
+        doAJAX(METHOD_DELETE, SERVER_HOST + '/apiGroup/' + id, null, function (result) {
             if (result.code == 200) {
                 console.log('删除接口分组成功!');
                 location.reload();

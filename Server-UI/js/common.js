@@ -3,6 +3,8 @@
  */
 /**是否处于调试模式*/
 const IS_DEBUG_ENABLED = false;
+/**服务地址*/
+const SERVER_HOST = "http://localhost:8686";
 
 /**请求方法GET*/
 const METHOD_GET = "get";
@@ -21,7 +23,6 @@ const METHOD_DELETE = "delete";
  * @param error 结果事件
  */
 function doAJAX(type, url, data, success, error) {
-
     $.ajax({
         'type': type,
         'url': url,
@@ -85,7 +86,7 @@ function textareaAutoHeight(obj) {
  * @param txt option显示的文字,如果文字为空则value代替
  * @returns {string}
  */
-function getSelectTureOrFalse(value,txt) {
+function getSelectTureOrFalse(value, txt) {
     var html = '<select class="form-control">';
     if (value != null) {
         html += '<option value="' + value + '">';

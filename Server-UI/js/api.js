@@ -13,7 +13,7 @@ function createApi() {
     if (api == null) {
         return;
     }
-    doAJAX(METHOD_POST, 'http://localhost:8686/api', api, function (result) {
+    doAJAX(METHOD_POST, SERVER_HOST + '/api', api, function (result) {
         if (result.code == 200) {
             console.log('新增接口成功');
             alert('新增接口成功!');
@@ -66,7 +66,7 @@ function updateApi() {
         console.log(api);
     }
 
-    doAJAX(METHOD_PUT, 'http://localhost:8686/api', api, function (result) {
+    doAJAX(METHOD_PUT, SERVER_HOST + '/api', api, function (result) {
         if (result.code == 200) {
             console.log('新增接口成功');
             alert('修改接口成功!');
@@ -92,7 +92,7 @@ function updateApi() {
  */
 function deleteApi(id) {
     if (confirm('确定删除该接口?')) {
-        doAJAX(METHOD_DELETE, 'http://localhost:8686/api/' + id, null, function (result) {
+        doAJAX(METHOD_DELETE, SERVER_HOST + '/api/' + id, null, function (result) {
             if (result.code == 200) {
                 console.log('删除接口成功!');
                 location.reload();
