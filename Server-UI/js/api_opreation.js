@@ -55,7 +55,7 @@ function getResponseParameterTableHtml(typeValue, name, description, items) {
     html += '<td><input type="text" class="form-control" ' + descValue + '  placeholder="请输入参数的描述"></td>';
     html += '<td class="text-center"><span class="btn btn-link" onclick="removeResponseTr(this)">移除</span></td>';
     html += '</tr>';
-    if ((typeValue == TYPE_ARRAY || typeValue == TYPE_OBJECT )) {
+    if ((typeValue == TYPE_ARRAY || typeValue == TYPE_OBJECT)) {
         //添加子属性
         var id = ("resp_param_add_" + Date.parse(new Date()) + "_" + Math.random()).replace(".", "");
         html += '<tr><td></td><td colspan="3">' +
@@ -84,6 +84,7 @@ function getResponseParameterTableHtml(typeValue, name, description, items) {
     }
     return html;
 }
+
 /**
  * 获得响应结果的html
  * @returns {string}
@@ -181,7 +182,7 @@ function getParameterSetModelHtml(type, data) {
     }
     //属性说明 begin
     var hideAttribute = true;
-    if ((type == TYPE_OBJECT || type == TYPE_ARRAY) || ( type == "string" && (format == TYPE_OBJECT || format == TYPE_ARRAY))) {
+    if ((type == TYPE_OBJECT || type == TYPE_ARRAY) || (type == "string" && (format == TYPE_OBJECT || format == TYPE_ARRAY))) {
         hideAttribute = false;
     }
     html += '<div class="form-group ' + (hideAttribute == true ? "display-none" : "") + '" id="parameter_attribute_items">' +
@@ -233,7 +234,7 @@ function getParameterSetModelHtml(type, data) {
     //枚举值 end
 
     var hideMinMaxPat = false;
-    if ((type == TYPE_OBJECT || type == TYPE_ARRAY) && ( format == TYPE_OBJECT || format == TYPE_ARRAY)) {
+    if ((type == TYPE_OBJECT || type == TYPE_ARRAY) && (format == TYPE_OBJECT || format == TYPE_ARRAY)) {
         hideMinMaxPat = true;
     }
     //大小要求 begin
@@ -285,6 +286,7 @@ function showParameterSetModel(obj) {
     };
     $('#request-parameter-set-modal').modal('show');
 }
+
 /**
  * 编辑更多参数的确定事件
  * @param paramId 所属参数的id
@@ -326,7 +328,7 @@ function confirmParamterSetModel(paramId) {
         data.max = max;
     }
     var pattern = $("#api_parameter_attribute_pattern").val();
-    if (pattern != '' && ( format != TYPE_ARRAY || format != TYPE_OBJECT)) {
+    if (pattern != '' && (format != TYPE_ARRAY || format != TYPE_OBJECT)) {
         data.pattern = pattern;
     }
 
@@ -362,6 +364,7 @@ function getParameterAttributeTableHtml(typeValue, name, desc) {
     html += '</tr>';
     return html;
 }
+
 /**
  * 添加响应
  */
@@ -388,6 +391,7 @@ function parameterAttributeFormatChange(value) {
         $("#api-parameter-attribute-pattern-box").show();
     }
 }
+
 /**
  * 显示或者隐藏返回参数的二级参数
  * @param value
@@ -447,6 +451,7 @@ function addResponseParameterToResponseTable(close) {
         $("#response-parameter-set-modal").modal('hide');
     }
 }
+
 /**
  * 添加附加说明
  * @param title
@@ -463,6 +468,7 @@ function addAdditionalInstructions(title, description) {
         '</div>';
     $("#api-additional-instructions").append($(html));
 }
+
 /**
  * 获取API的基本信息(该方法合适新建用,其他操作需要添加而外的属性)
  * @returns {{}}
@@ -684,7 +690,7 @@ function getApiInfo() {
  */
 function loadApiUpdateInfo(aid) {
     $(".load-api-tips").show();
-    doAJAX(METHOD_GET, 'http://localhost:8686/api/' + aid, null, function (result) {
+    doAJAX(METHOD_GET, SERVER_HOST + '/api/' + aid, null, function (result) {
         if (result.code == 200) {
             $(".load-api-tips").hide();
             console.log('获取接口数据成功');

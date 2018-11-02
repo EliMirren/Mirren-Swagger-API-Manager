@@ -1,7 +1,6 @@
-免JDK说明:
-1.下载一个java1.8.0以上的jre下载地址https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-2.将下载的jre放在MSAM根目录的runtime文件夹中(没有runtime就创建),(Mac版从Contents开始,Linux版与Windows版从jrex.x.x开始,去掉x.x.x)
-3.
-linux:复制linuxStart.sh到MSAM目录(与.jar同级),双击.sh文件启动
-mac:复制macStart.sh到MSAM目录(与.jar同级),双击.sh文件启动
-Windows:复制windowStart.bat到MSAM目录(与.jar同级),双击.bat文件启动
+1.如果已经有java 1.8环境,直接运行start.bat(windows)或start.sh(unix)
+2.软件默认端口号为8686,如果需要改端口可以修改或执行内容为:java -jar -Dserver.port=端口号  Mirren-Swagger-API-Manager.jar
+3.启动软件后在浏览器访问http://服务地址:端口号/
+4.选择服务端UI或客户端UI进行操作
+5.服务端地址: http://服务地址:端口号/Server-UI/index.html
+5.客户端地址: http://服务地址:端口号/Client-UI/index.html

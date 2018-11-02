@@ -3,8 +3,10 @@
  */
 /**是否处于调试模式*/
 const IS_DEBUG_ENABLED = false;
-/**服务地址*/
-const SERVER_HOST = "http://localhost:8686";
+/**服务地址用于全静态化*/
+//const SERVER_HOST = "http://localhost:8686";
+/**服务地址用于固定Server*/
+const SERVER_HOST = "";
 
 /**请求方法GET*/
 const METHOD_GET = "get";
@@ -14,6 +16,7 @@ const METHOD_POST = "post";
 const METHOD_PUT = "put";
 /**请求方法delete*/
 const METHOD_DELETE = "delete";
+
 /**
  * 执行ajax
  * @param type 请求类似,用常量
@@ -32,6 +35,7 @@ function doAJAX(type, url, data, success, error) {
         'error': error
     });
 }
+
 /**
  * 获取路径参数
  * @returns {*}
@@ -66,6 +70,7 @@ function getUrlParam(name) {
         return "";
     }
 }
+
 /**
  * 自适应textarea内容高度
  */
@@ -80,6 +85,7 @@ function textareaAutoHeight(obj) {
         })
     }
 }
+
 /**
  * 获得select的是或者否
  * @param value option的值
@@ -139,6 +145,7 @@ function getParameterInSelectOptionHtml(value, txt) {
     html += '</select>';
     return html;
 }
+
 /**
  * 获得参数的method select option 字符串
  * @param value option的值
@@ -187,6 +194,7 @@ function getParameterTypeSelectOptionHtml(value, txt) {
     html += '</select>';
     return html;
 }
+
 /**
  * 移除obj节点的父节点的父节点
  * @param obj 传对象的this

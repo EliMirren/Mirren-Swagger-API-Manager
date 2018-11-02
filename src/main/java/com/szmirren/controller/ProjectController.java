@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.szmirren.common.Constant;
 import com.szmirren.entity.Project;
 import com.szmirren.service.ProjectService;
 @CrossOrigin
@@ -22,6 +24,17 @@ public class ProjectController {
 	/** 项目服务接口 */
 	@Autowired
 	private ProjectService proService;
+	/**
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = {"/", "/index.html"}, produces = {"text/html;charset=UTF-8"})
+	public String index(HttpServletResponse response) {
+		response.addHeader("title", Constant.MSAM_NAME);
+		return "<h1 style='text-align: center;'>欢迎使用" + Constant.MSAM_MIN_NAME + "</h1>" 
+				+ "	<h1 style='text-align: center;'>"+ Constant.MSAM_NAME_VERSION + "</h1>"
+				+ "	<h2 style='text-align: center;'><a href='/Server-UI/index.html'>服务端UI</a> <a style='margin-left:10px' href='/Client-UI/index.html'>客户端UI</a></h2>";
+	}
 
 	/**
 	 * 获取所有项目
