@@ -1,17 +1,68 @@
 //如果文件路径不为空就加载数据
 $(function () {
+    var isLoad = false;//编辑是否加载了文件
     var urls = $("#project_json_url").val();
     if (urls != '') {
         //加载网络文件
         getPojectAndLoad();
+        isLoad = true;
     } else {
         //加载本地文件
         var file = document.getElementById('hide-load-file').files[0];
         if (file != null) {
             getProjectFileAndLoad();
+            isLoad = true;
         }
     }
+    if (!isLoad) {
+        console.log('获取项目列表');
+        $.ajax({
+            'type': 'get',
+            'url': 'http://localhost:8686/project',
+            'async': true,
+            'success': function (result) {
+                if (result.code == 200) {
+                    var data = result.data;
+                    console.log('获取项目列表结果:');
+                    console.log(data);
+                    if (data.length > 0) {
+                        var htmlTxt = '<h1 class="text-center">请在上方输入框中输入Json文件的路径并加载数据,或选择下方项目</h1>';
+                        htmlTxt += '<div class="form-horizontal">' +
+                            '<label class="col-sm-2 control-label">请选择项目:</label>' +
+                            '<div class="col-sm-10">' +
+                            '<select class="form-control" onchange="selectProjectOnChange(this)">';
+                        htmlTxt += '<option value="-null-">请选择要加载的项目</option>';
+                        var prefix = location.protocol + '//' + location.host;
+                        for (var i = 0; i < data.length; i++) {
+                            htmlTxt += '<option value=\'' + prefix + '/project/getJson/' + data[i].key + '\'>' + data[i].name + ' _ ' + data[i].version + '</option>';
+                        }
+                        htmlTxt += '</select></div></div>';
+                        $("#msam-project-info-main").html(htmlTxt);
+                    }
+                } else {
+                    $("#msam-project-info-main").html($("<h1 class=\"text-center\">请在上方输入框中输入Json文件的路径并加载数据</h1>"))
+                }
+            },
+            'error': function (err) {
+                console.log(err);
+            }
+        });
+    }
 });
+
+/**
+ * 选择项目的改变事件
+ * @param obj
+ */
+function selectProjectOnChange(obj) {
+    var uri = $(obj).val();
+    if ("-null-" == uri) {
+        return;
+    }
+    $("#project_json_url").val(uri);
+    getPojectAndLoad();
+}
+
 /**
  * 自适应textarea内容高度
  */
@@ -51,6 +102,7 @@ function getPojectAndLoad() {
         }
     });
 }
+
 /**
  *从本地获取文件并加载
  */
@@ -162,6 +214,7 @@ function loadProject(data) {
         $("#msam-project-info-top").html($('<h1>加载信息失败,请查看控制台</h1>'));
     }
 }
+
 /**
  * 加载API数据
  * @param data
@@ -205,234 +258,239 @@ function loadApiGroupAndApi(data) {
             html += '<p>附加文档: <a href=\'' + value.externalDocs.url + '\' target="_blank">' + value.externalDocs.description + '</a></p>';
         }
         var apis = value.apis;
-        for (var i = 0; i < apis.length; i++) {
-            var api = apis[i];
-            if (locationData.apis == null) {
-                locationData.apis = [];
-            }
-            locationData.apis.push({'api': (api.summary == null ? api.path : api.summary), 'apiId': api.operationId});
-            // 接口信息 begin
-            var method = api.method;//请求方法
-            var styleMethod = '-' + method;//请求方法的样式
-            var deprecated = (api.deprecated != null && api.deprecated == true) ? "-deprecated " : "";//该接口是否已经过时
-
-            html += '<h2 id=\'' + api.operationId + '\' class="' + deprecated + '"><span class="point"></span>' + api.summary + '</h2>';
-
-            html += '<div class="api-body' + deprecated + ' api-body' + styleMethod + '">';
-            // 请求方法 begin
-            html += '<div class="api-item api-body-method' + deprecated + ' method' + styleMethod + '">' +
-                '<div class="api-item-sub">请求方法: ' + method + '</div>' +
-                '<div class="api-item-sub">请求URL:</div>' +
-                '</div>';
-            // 请求方法 end
-            //URL信息 begin
-            var tryItOutData = {};//运行测试需要用到的数据
-            tryItOutData.path = api.path;
-            tryItOutData.method = api.method;
-            tryItOutData.consumes = api.consumes;
-            tryItOutData.produces = api.produces;
-            tryItOutData.parameters = api.parameters;
-            html += '<div class="api-item">' +
-                '<span class="api-item-sub ' + deprecated + '">#{scheme}://#{host}#{basePath}</span>' +
-                '<span class="api-item-sub ' + deprecated + '">' + api.path + '</span>' +
-                '<div>' +
-                '<span class="url-copy url-copy-full" onclick="copyFull(this)">Copy</span>' +
-                '<span class="url-copy url-copy-path" onclick="copyPath(this)">CopyPath</span>' +
-                '<span class="url-copy url-copy-path" onclick="tryItOut(this)" data=\'' + JSON.stringify(tryItOutData) + '\'>测试运行</span></div>' +
-                '</div>';
-            //URL信息 begin
-            html += '<div class="api-item api-body-follow' + deprecated + ' follow' + styleMethod + '">' + api.description + '</div>';
-            //请求参数 begin
-            html += '<div class="api-item">请求参数:<span style="float: right;">';
-            if (api.consumes != null && api.consumes.length > 0) {
-                html += '<span style="float: right;"> consumes : <select class="border-1px-solid-ccc" style="min-width: 100px">';
-                for (var c = 0; c < api.consumes.length; c++) {
-                    html += '<option value=\'' + api.consumes[c] + '\'>' + api.consumes[c] + '</option>';
+        if (apis != null) {
+            for (var i = 0; i < apis.length; i++) {
+                var api = apis[i];
+                if (locationData.apis == null) {
+                    locationData.apis = [];
                 }
-                html += '</select></span>';
-            }
-            html += '</div>';
-            if (api.parameters != null && api.parameters.length > 0) {
-                var parameters = api.parameters;
-                var txt =
-                    '<div class="table-responsive api-item api-body-follow' + deprecated + ' follow' + styleMethod + '">' +
-                    '<table class="table table-bordered">' +
-                    '<thead>' +
-                    '<tr>' +
-                    '<th class="text-center">是否必填</th>' +
-                    '<th>参数位置</th>' +
-                    '<th>参数类型</th>' +
-                    '<th>参数名称</th>' +
-                    '<th>参数描述</th>' +
-                    '</tr>' +
-                    '</thead>' +
-                    '<tbody>';
-                for (var j = 0; j < parameters.length; j++) {
-                    var p_required = parameters[j].required == true ? '是' : '否';
-                    var p_name = parameters[j].name == null ? '' : parameters[j].name;
-                    var p_type = parameters[j].type == null ? '' : parameters[j].type;
-                    var p_in = parameters[j].in == null ? '' : parameters[j].in;
-                    var p_description = parameters[j].description == null ? '' : parameters[j].description;
-                    txt +=
-                        '<tr><td class="text-center">' + p_required + '</td>' +
-                        '<td>' + p_in + '</td>' +
-                        '<td>' + p_type + '</td>' +
-                        '<td>' + p_name + '</td>' +
-                        '<td>' + p_description + '</td>' +
-                        '</tr>';
-                    //是否需要添加参数说明
-                    var isAddParamExplain = false;
-                    var txtParamExplain = '<tr><td></td><td colspan="4" class="pd5px">';
-                    txtParamExplain += '<div>参数说明:</div>';
-                    if (parameters[j].default != null) {
-                        isAddParamExplain = true;
-                        txtParamExplain += '<span class="pull-left background-color-white radius5px mleft10px pd5px10px inline-block">默认值: ' + parameters[j].default + '</span>';
-                    }
-                    if (parameters[j].enum != null) {
-                        var enums = parameters[j].enum;
-                        isAddParamExplain = true;
-                        txtParamExplain += '<span class="pull-left background-color-white radius5px mleft10px pd5px10px inline-block">枚举值: ';
-                        for (var es = 0; es < enums.length; es++) {
-                            if (es != 0) {
-                                txtParamExplain += ' , ';
-                            }
-                            txtParamExplain += enums[es];
-                        }
-                        txtParamExplain += '</span>';
-                    }
-                    if (parameters[j].minLength != null && parameters[j].minLength != '') {
-                        isAddParamExplain = true;
-                        txtParamExplain += '<span class="pull-left background-color-white radius5px mleft10px pd5px10px inline-block">最小长度: ' + parameters[j].minLength + '</span>';
-                    }
-                    if (parameters[j].minimum != null && parameters[j].minimum != '') {
-                        isAddParamExplain = true;
-                        txtParamExplain += '<span class="pull-left background-color-white radius5px mleft10px pd5px10px inline-block">最小值: ' + parameters[j].minimum + '</span>';
-                    }
-                    if (parameters[j].maxLength != null && parameters[j].maxLength != '') {
-                        isAddParamExplain = true;
-                        txtParamExplain += '<span class="pull-left background-color-white radius5px mleft10px pd5px10px inline-block">最大长度: ' + parameters[j].maxLength + '</span>';
-                    }
-                    if (parameters[j].maximum != null && parameters[j].maximum != '') {
-                        isAddParamExplain = true;
-                        txtParamExplain += '<span class="pull-left background-color-white radius5px mleft10px pd5px10px inline-block">最大值: ' + parameters[j].maximum + '</span>';
-                    }
-                    txtParamExplain += '<div class="clearfix mb5px"></div>';
-                    if (parameters[j].pattern != null) {
-                        isAddParamExplain = true;
-                        txtParamExplain += '<span class="background-color-white radius5px mleft10px pd5px10px mb5px inline-block ">正则表达式: ' + parameters[j].pattern + '</span>';
-                    }
-                    if (parameters[j].format != null) {
-                        isAddParamExplain = true;
-                        txtParamExplain += '<span class="background-color-white radius5px mleft10px pd5px10px mb5px inline-block ">格式类型: ' + parameters[j].format + '</span>';
-                    }
-                    if (parameters[j]['x-items'] != null) {
-                        var p_items = parameters[j]['x-items'];
-                        if (p_items.length > 0) {
-                            isAddParamExplain = true;
-                            txtParamExplain +=
-                                '<div class="table-responsive">' +
-                                '<table class="table table-bordered">' +
-                                '<thead>' +
-                                '<tr>' +
-                                '<th>参数类型</th>' +
-                                '<th>参数名称</th>' +
-                                '<th>参数描述</th>' +
-                                '</tr>' +
-                                '</thead>' +
-                                '<tbody>';
-                            for (var itp = 0; itp < p_items.length; itp++) {
-                                txtParamExplain +=
-                                    '<tr>' +
-                                    '<td>' + p_items[itp].type + '</td>' +
-                                    '<td>' + p_items[itp].name + '</td>' +
-                                    '<td>' + p_items[itp].description + '</td>' +
-                                    '</tr>';
-                            }
-                            txtParamExplain += '</tbody></table></div>';
-                        }
-                    }
-                    txt += '</td></tr>';
+                locationData.apis.push({
+                    'api': (api.summary == null ? api.path : api.summary),
+                    'apiId': api.operationId
+                });
+                // 接口信息 begin
+                var method = api.method;//请求方法
+                var styleMethod = '-' + method;//请求方法的样式
+                var deprecated = (api.deprecated != null && api.deprecated == true) ? "-deprecated " : "";//该接口是否已经过时
 
-                    if (isAddParamExplain) {
-                        txt += txtParamExplain;
-                    }
+                html += '<h2 id=\'' + api.operationId + '\' class="' + deprecated + '"><span class="point"></span>' + api.summary + '</h2>';
 
+                html += '<div class="api-body' + deprecated + ' api-body' + styleMethod + '">';
+                // 请求方法 begin
+                html += '<div class="api-item api-body-method' + deprecated + ' method' + styleMethod + '">' +
+                    '<div class="api-item-sub">请求方法: ' + method + '</div>' +
+                    '<div class="api-item-sub">请求URL:</div>' +
+                    '</div>';
+                // 请求方法 end
+                //URL信息 begin
+                var tryItOutData = {};//运行测试需要用到的数据
+                tryItOutData.path = api.path;
+                tryItOutData.method = api.method;
+                tryItOutData.consumes = api.consumes;
+                tryItOutData.produces = api.produces;
+                tryItOutData.parameters = api.parameters;
+                html += '<div class="api-item">' +
+                    '<span class="api-item-sub ' + deprecated + '">#{scheme}://#{host}#{basePath}</span>' +
+                    '<span class="api-item-sub ' + deprecated + '">' + api.path + '</span>' +
+                    '<div>' +
+                    '<span class="url-copy url-copy-full" onclick="copyFull(this)">Copy</span>' +
+                    '<span class="url-copy url-copy-path" onclick="copyPath(this)">CopyPath</span>' +
+                    '<span class="url-copy url-copy-path" onclick="tryItOut(this)" data=\'' + JSON.stringify(tryItOutData) + '\'>测试运行</span></div>' +
+                    '</div>';
+                //URL信息 begin
+                html += '<div class="api-item api-body-follow' + deprecated + ' follow' + styleMethod + '">' + api.description + '</div>';
+                //请求参数 begin
+                html += '<div class="api-item">请求参数:<span style="float: right;">';
+                if (api.consumes != null && api.consumes.length > 0) {
+                    html += '<span style="float: right;"> consumes : <select class="border-1px-solid-ccc" style="min-width: 100px">';
+                    for (var c = 0; c < api.consumes.length; c++) {
+                        html += '<option value=\'' + api.consumes[c] + '\'>' + api.consumes[c] + '</option>';
+                    }
+                    html += '</select></span>';
                 }
-                txt += '</tbody></table></div>';
-                html += txt;
-            }
-            //请求参数 end
-            //响应结果 begin
-            html += '<div class="api-item">响应结果:';
-            if (api.produces != null && api.produces.length > 0) {
-                html += '<span style="float: right;">produces :  <select class="border-1px-solid-ccc" style="min-width: 100px">';
-                for (var p = 0; p < api.produces.length; p++) {
-                    html += '<option value=\'' + api.produces[p] + '\'>' + api.produces[p] + '</option>';
-                }
-                html += '</select></span>';
-            }
-            html += '</div>';
-
-            if (api.responses != null) {
-                //responses拓展了Swagger的Response加多一个statusCode,Response的vendorExtensions加多一个parameters,参数为name,type,description,body(body只有在array或object时有用与parameters类型一样)
-                var responses = api.responses;
-                if (!jQuery.isEmptyObject(responses)) {
-                    html +=
-                        '<div class="table-responsive api-item api-body-follow' + deprecated + '  follow' + styleMethod + ' ">' +
-                        '<table class="table table-bordered margin-bottom-0">' +
+                html += '</div>';
+                if (api.parameters != null && api.parameters.length > 0) {
+                    var parameters = api.parameters;
+                    var txt =
+                        '<div class="table-responsive api-item api-body-follow' + deprecated + ' follow' + styleMethod + '">' +
+                        '<table class="table table-bordered">' +
                         '<thead>' +
                         '<tr>' +
-                        '<th>状态基本描述</th>' +
-                        '<th>参数基本描述</th>' +
+                        '<th class="text-center">是否必填</th>' +
+                        '<th>参数位置</th>' +
+                        '<th>参数类型</th>' +
+                        '<th>参数名称</th>' +
+                        '<th>参数描述</th>' +
                         '</tr>' +
                         '</thead>' +
                         '<tbody>';
-                    for (var code in api.responses) {
-                        var resp = api.responses[code];
-                        //添加基本描述
-                        html += '<tr><td>' + code + '</td><td><textarea class="api-body-explain' + deprecated + ' explain' + styleMethod + '" rows="1" contenteditable="true" readonly="readonly">' + resp.description + '</textarea></td></tr>';
-                        var ve_ps = api.responses[code]['x-parameters'];
-                        if (!jQuery.isEmptyObject(ve_ps)) {
-                            html +=
-                                '<tr><td colspan="2" ><table class="table table-bordered">' +
-                                '<thead><tr><th>参数类型</th><th>参数名称</th><th>参数描述</th></tr></thead><tbody>';
-                            for (var vep = 0; vep < ve_ps.length; vep++) {
-                                html += '<tr><td>' + ve_ps[vep].type + '</td><td>' + ve_ps[vep].name + '</td><td>' + ve_ps[vep].description + '</td>';
-                                if ((ve_ps[vep].type == 'array' || ve_ps[vep].type == 'object') && ve_ps[vep].items != null) {
-                                    var vep_bodys = ve_ps[vep].items;
-                                    if (!jQuery.isEmptyObject(vep_bodys)) {
-                                        html += '<tr><td></td> <td colspan="2" class="pall0px"><table class="table table-bordered mall0px">';
-                                        html += '<thead><tr><th>参数类型</th><th>参数名称</th><th>参数描述</th></tr></thead><tbody>';
-                                        for (var vepb = 0; vepb < vep_bodys.length; vepb++) {
-                                            txt += '<tr><td>' + vep_bodys[vepb].type + '</td><td>' + vep_bodys[vepb].name + '</td><td>' + vep_bodys[vepb].description + '</td>';
-                                        }
-                                        html += '</tbody></table></td></tr>';
-                                    }
-                                }
-                                html += '</tr>';
-                            }
-                            html += '</tbody></table></td></tr>';
+                    for (var j = 0; j < parameters.length; j++) {
+                        var p_required = parameters[j].required == true ? '是' : '否';
+                        var p_name = parameters[j].name == null ? '' : parameters[j].name;
+                        var p_type = parameters[j].type == null ? '' : parameters[j].type;
+                        var p_in = parameters[j].in == null ? '' : parameters[j].in;
+                        var p_description = parameters[j].description == null ? '' : parameters[j].description;
+                        txt +=
+                            '<tr><td class="text-center">' + p_required + '</td>' +
+                            '<td>' + p_in + '</td>' +
+                            '<td>' + p_type + '</td>' +
+                            '<td>' + p_name + '</td>' +
+                            '<td>' + p_description + '</td>' +
+                            '</tr>';
+                        //是否需要添加参数说明
+                        var isAddParamExplain = false;
+                        var txtParamExplain = '<tr><td></td><td colspan="4" class="pd5px">';
+                        txtParamExplain += '<div>参数说明:</div>';
+                        if (parameters[j].default != null) {
+                            isAddParamExplain = true;
+                            txtParamExplain += '<span class="pull-left background-color-white radius5px mleft10px pd5px10px inline-block">默认值: ' + parameters[j].default + '</span>';
                         }
+                        if (parameters[j].enum != null) {
+                            var enums = parameters[j].enum;
+                            isAddParamExplain = true;
+                            txtParamExplain += '<span class="pull-left background-color-white radius5px mleft10px pd5px10px inline-block">枚举值: ';
+                            for (var es = 0; es < enums.length; es++) {
+                                if (es != 0) {
+                                    txtParamExplain += ' , ';
+                                }
+                                txtParamExplain += enums[es];
+                            }
+                            txtParamExplain += '</span>';
+                        }
+                        if (parameters[j].minLength != null && parameters[j].minLength != '') {
+                            isAddParamExplain = true;
+                            txtParamExplain += '<span class="pull-left background-color-white radius5px mleft10px pd5px10px inline-block">最小长度: ' + parameters[j].minLength + '</span>';
+                        }
+                        if (parameters[j].minimum != null && parameters[j].minimum != '') {
+                            isAddParamExplain = true;
+                            txtParamExplain += '<span class="pull-left background-color-white radius5px mleft10px pd5px10px inline-block">最小值: ' + parameters[j].minimum + '</span>';
+                        }
+                        if (parameters[j].maxLength != null && parameters[j].maxLength != '') {
+                            isAddParamExplain = true;
+                            txtParamExplain += '<span class="pull-left background-color-white radius5px mleft10px pd5px10px inline-block">最大长度: ' + parameters[j].maxLength + '</span>';
+                        }
+                        if (parameters[j].maximum != null && parameters[j].maximum != '') {
+                            isAddParamExplain = true;
+                            txtParamExplain += '<span class="pull-left background-color-white radius5px mleft10px pd5px10px inline-block">最大值: ' + parameters[j].maximum + '</span>';
+                        }
+                        txtParamExplain += '<div class="clearfix mb5px"></div>';
+                        if (parameters[j].pattern != null) {
+                            isAddParamExplain = true;
+                            txtParamExplain += '<span class="background-color-white radius5px mleft10px pd5px10px mb5px inline-block ">正则表达式: ' + parameters[j].pattern + '</span>';
+                        }
+                        if (parameters[j].format != null) {
+                            isAddParamExplain = true;
+                            txtParamExplain += '<span class="background-color-white radius5px mleft10px pd5px10px mb5px inline-block ">格式类型: ' + parameters[j].format + '</span>';
+                        }
+                        if (parameters[j]['x-items'] != null) {
+                            var p_items = parameters[j]['x-items'];
+                            if (p_items.length > 0) {
+                                isAddParamExplain = true;
+                                txtParamExplain +=
+                                    '<div class="table-responsive">' +
+                                    '<table class="table table-bordered">' +
+                                    '<thead>' +
+                                    '<tr>' +
+                                    '<th>参数类型</th>' +
+                                    '<th>参数名称</th>' +
+                                    '<th>参数描述</th>' +
+                                    '</tr>' +
+                                    '</thead>' +
+                                    '<tbody>';
+                                for (var itp = 0; itp < p_items.length; itp++) {
+                                    txtParamExplain +=
+                                        '<tr>' +
+                                        '<td>' + p_items[itp].type + '</td>' +
+                                        '<td>' + p_items[itp].name + '</td>' +
+                                        '<td>' + p_items[itp].description + '</td>' +
+                                        '</tr>';
+                                }
+                                txtParamExplain += '</tbody></table></div>';
+                            }
+                        }
+                        txt += '</td></tr>';
+
+                        if (isAddParamExplain) {
+                            txt += txtParamExplain;
+                        }
+
                     }
-                    html += '</tbody></table></div>';
+                    txt += '</tbody></table></div>';
+                    html += txt;
                 }
-            }
-            //响应结果 end
-            //附加说明 begin
-            if (api['x-additionalInstructions'] != null) {
-                var instrs = api['x-additionalInstructions'];
-                if (instrs.length > 0) {
-                    html += '<div class="api-item">附加说明:</div>';
-                    html += '<div class="api-item api-body-follow' + deprecated + '  follow' + styleMethod + '">';
-                    for (var d = 0; d < instrs.length; d++) {
-                        html += '<Strong>' + instrs[d].title + '</Strong>';
-                        html += '<textarea class="api-body-explain' + deprecated + ' explain' + styleMethod + '" rows="1" readonly="readonly" contenteditable="true">' + instrs[d].description + '</textarea>';
+                //请求参数 end
+                //响应结果 begin
+                html += '<div class="api-item">响应结果:';
+                if (api.produces != null && api.produces.length > 0) {
+                    html += '<span style="float: right;">produces :  <select class="border-1px-solid-ccc" style="min-width: 100px">';
+                    for (var p = 0; p < api.produces.length; p++) {
+                        html += '<option value=\'' + api.produces[p] + '\'>' + api.produces[p] + '</option>';
                     }
-                    html += '</div>';
+                    html += '</select></span>';
                 }
+                html += '</div>';
+
+                if (api.responses != null) {
+                    //responses拓展了Swagger的Response加多一个statusCode,Response的vendorExtensions加多一个parameters,参数为name,type,description,body(body只有在array或object时有用与parameters类型一样)
+                    var responses = api.responses;
+                    if (!jQuery.isEmptyObject(responses)) {
+                        html +=
+                            '<div class="table-responsive api-item api-body-follow' + deprecated + '  follow' + styleMethod + ' ">' +
+                            '<table class="table table-bordered margin-bottom-0">' +
+                            '<thead>' +
+                            '<tr>' +
+                            '<th>状态基本描述</th>' +
+                            '<th>参数基本描述</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+                        for (var code in api.responses) {
+                            var resp = api.responses[code];
+                            //添加基本描述
+                            html += '<tr><td>' + code + '</td><td><textarea class="api-body-explain' + deprecated + ' explain' + styleMethod + '" rows="1" contenteditable="true" readonly="readonly">' + resp.description + '</textarea></td></tr>';
+                            var ve_ps = api.responses[code]['x-parameters'];
+                            if (!jQuery.isEmptyObject(ve_ps)) {
+                                html +=
+                                    '<tr><td colspan="2" ><table class="table table-bordered">' +
+                                    '<thead><tr><th>参数类型</th><th>参数名称</th><th>参数描述</th></tr></thead><tbody>';
+                                for (var vep = 0; vep < ve_ps.length; vep++) {
+                                    html += '<tr><td>' + ve_ps[vep].type + '</td><td>' + ve_ps[vep].name + '</td><td>' + ve_ps[vep].description + '</td>';
+                                    if ((ve_ps[vep].type == 'array' || ve_ps[vep].type == 'object') && ve_ps[vep].items != null) {
+                                        var vep_bodys = ve_ps[vep].items;
+                                        if (!jQuery.isEmptyObject(vep_bodys)) {
+                                            html += '<tr><td></td> <td colspan="2" class="pall0px"><table class="table table-bordered mall0px">';
+                                            html += '<thead><tr><th>参数类型</th><th>参数名称</th><th>参数描述</th></tr></thead><tbody>';
+                                            for (var vepb = 0; vepb < vep_bodys.length; vepb++) {
+                                                txt += '<tr><td>' + vep_bodys[vepb].type + '</td><td>' + vep_bodys[vepb].name + '</td><td>' + vep_bodys[vepb].description + '</td>';
+                                            }
+                                            html += '</tbody></table></td></tr>';
+                                        }
+                                    }
+                                    html += '</tr>';
+                                }
+                                html += '</tbody></table></td></tr>';
+                            }
+                        }
+                        html += '</tbody></table></div>';
+                    }
+                }
+                //响应结果 end
+                //附加说明 begin
+                if (api['x-additionalInstructions'] != null) {
+                    var instrs = api['x-additionalInstructions'];
+                    if (instrs.length > 0) {
+                        html += '<div class="api-item">附加说明:</div>';
+                        html += '<div class="api-item api-body-follow' + deprecated + '  follow' + styleMethod + '">';
+                        for (var d = 0; d < instrs.length; d++) {
+                            html += '<Strong>' + instrs[d].title + '</Strong>';
+                            html += '<textarea class="api-body-explain' + deprecated + ' explain' + styleMethod + '" rows="1" readonly="readonly" contenteditable="true">' + instrs[d].description + '</textarea>';
+                        }
+                        html += '</div>';
+                    }
+                }
+                //附加说明 end
+                html += '</div>';
             }
-            //附加说明 end
-            html += '</div>';
         }
         // 接口信息 end
         html += '<div>';
@@ -451,15 +509,17 @@ function loadApiGroupAndApi(data) {
  */
 function loadGroupLinkLocation(data) {
     var html = '<li><a href=\'#' + data.group + '\'>' + data.group + '</a>';
-    if (data.apis.length > 0) {
-        html += '<ul class="nav">';
-        for (var i = 0; i < data.apis.length; i++) {
-            html += '<li><a href=\'#' + data.apis[i].apiId + '\'>' + data.apis[i].api + '</a></li>';
+    if (data.apis != null) {
+        if (data.apis.length > 0) {
+            html += '<ul class="nav">';
+            for (var i = 0; i < data.apis.length; i++) {
+                html += '<li><a href=\'#' + data.apis[i].apiId + '\'>' + data.apis[i].api + '</a></li>';
+            }
+            html += '</ul>';
         }
-        html += '</ul>';
+        html += '</li>';
+        $("#api-group-main").append($(html));
     }
-    html += '</li>';
-    $("#api-group-main").append($(html));
 }
 
 /**
@@ -496,6 +556,7 @@ function copyFull(obj) {
         alert("复制失败:请手动复制或者使用最新的谷歌火狐浏览器");
     });
 }
+
 /**
  * 复制URL的Path
  * @param obj 按钮调用时传入按钮的this
@@ -605,6 +666,7 @@ function tryItOut(obj) {
     $("#try_it_out_response_box").hide();
     $("#try-it-out-modal").modal('show');
 }
+
 /**
  * 移除某一行请求参数
  * @param obj
