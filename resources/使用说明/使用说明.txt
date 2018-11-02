@@ -3,4 +3,6 @@
 3.启动软件后在浏览器访问http://服务地址:端口号/
 4.选择服务端UI或客户端UI进行操作
 5.服务端地址: http://服务地址:端口号/Server-UI/index.html
-5.客户端地址: http://服务地址:端口号/Client-UI/index.html
+6.客户端地址: http://服务地址:端口号/Client-UI/index.html
+7.当第一次访问服务端Server-UI时会有一个普通的basic的普通验证,验证的账户密码在config/user.json当中,默认是msamAdmin可以做自行修改
+8.软件时,可以将config里面的ConfigDB.db复制的新版本中就可以继续使用旧版本的数据
