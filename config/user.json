@@ -1,0 +1,6 @@
+{
+	"__用户说明:": "默认用户名与密码为msamAdmin,可以自己修改或添加用户,目前一个用户对应一个json,pwd为密码,roles到时候可以用于作为读写等控制",
+	"msamAdmin": {
+		"pwd": "msamAdmin"
+	}
+}

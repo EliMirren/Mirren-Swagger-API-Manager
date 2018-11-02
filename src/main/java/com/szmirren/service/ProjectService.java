@@ -38,6 +38,13 @@ public interface ProjectService {
 	 */
 	Map<String, Object> saveProject(Project project);
 	/**
+	 * 复制一份项目
+	 * 
+	 * @param key
+	 * @return
+	 */
+	Map<String, Object> copyProject(String key);
+	/**
 	 * 更新项目
 	 * 
 	 * @param project

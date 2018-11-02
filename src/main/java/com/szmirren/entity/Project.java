@@ -8,6 +8,8 @@ package com.szmirren.entity;
 public class Project {
 	/** 项目的id */
 	private String key;
+	/** 最后操作时间 */
+	private long lastTime;
 	/** 下面都是Swagger的对应属性 */
 	private String swagger;
 	private String info;
@@ -179,14 +181,21 @@ public class Project {
 		return this;
 	}
 
+	public long getLastTime() {
+		return lastTime;
+	}
+
+	public void setLastTime(Long lastTime) {
+		this.lastTime = lastTime;
+	}
+
 	@Override
 	public String toString() {
 		return "Project [key=" + key + ", swagger=" + swagger + ", info=" + info + ", host=" + host + ", basePath=" + basePath + ", tags="
 				+ tags + ", paths=" + paths + ", schemes=" + schemes + ", consumes=" + consumes + ", produces=" + produces + ", security="
 				+ security + ", securityDefinitions=" + securityDefinitions + ", definitions=" + definitions + ", parameters=" + parameters
-				+ ", responses=" + responses + ", externalDocs=" + externalDocs + ", vendorExtensions=" + vendorExtensions + "]";
+				+ ", responses=" + responses + ", externalDocs=" + externalDocs + ", vendorExtensions=" + vendorExtensions + ", lastTime="
+				+ lastTime + "]";
 	}
-
-	
 
 }
