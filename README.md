@@ -29,6 +29,7 @@ MSAM以项目-接口分组-接口三个单位,项目最终生成的结果理论�
 - 选择服务端UI或客户端UI进行操作
 - 服务端地址: http://服务地址:端口号/Server-UI/index.html
 - 客户端地址: http://服务地址:端口号/Client-UI/index.html
+- 当第一次访问服务端Server-UI时会有一个普通的basic的普通验证,验证的账户密码在config/user.json当中,默认是msamAdmin可以做自行修改
 
 ## 拓展与二次开发
 数据库里面定义了项目,接口分组,以及接口三张表,属性对应Swagger的Swagger,Tags,Operation这三个类,前端操作需要将Json类型转换为String类型

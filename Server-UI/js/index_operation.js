@@ -36,6 +36,7 @@ function showOrHideApiOpblock(obj) {
     }
     textareaAutoHeight($($(obj).parent().parent()));
 }
+
 /**
  * 加载项目选中状态
  * @param id
@@ -47,6 +48,7 @@ function initProjectActive(id) {
     }
     $("#" + id).addClass("active");
 }
+
 /**
  * 加载项目信息
  * @param data
@@ -62,6 +64,7 @@ function loadProjectInfo(data) {
         '<h1 class="page-header">' + info.title +
         '<span class="badge"> ' + info.version + '</span>' +
         '<a href="./update.html?pid=' + data.key + '" class="btn btn-ms btn-primary mleft10px">修改</a>' +
+        '<a onclick="copyProject(\'' + data.key + '\')" class="btn btn-ms btn-primary mleft10px">复制副本</a>' +
         '<span class="btn btn-ms btn-danger mleft10px" onclick="deletProject(\'' + data.key + '\')">删除</span>';
     if (data.vendorExtensions != null) {
         var ve = JSON.parse(data.vendorExtensions);
@@ -445,6 +448,7 @@ function loadApiGroupAndApiOpblack(items) {
     }
     $("#project_info_APIs_tips").html("");
 }
+
 /**
  * 刷新API分组的数据
  * @param data
@@ -485,6 +489,7 @@ function createApiGroupShow() {
     $("#update-api-group-btn").hide();
     $('#api-group-modal').modal('show');
 }
+
 /**
  * 打开修改接口分组的model
  */

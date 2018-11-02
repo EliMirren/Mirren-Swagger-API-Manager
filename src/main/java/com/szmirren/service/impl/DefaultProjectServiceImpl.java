@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import com.szmirren.common.ConfigUtil;
@@ -57,6 +59,46 @@ public class DefaultProjectServiceImpl implements ProjectService {
 			ConfigUtil.saveProject(project);
 			return ResultUtil.succeed(1);
 		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultUtil.failed(e.getMessage());
+		}
+	}
+
+	@Override
+	public Map<String, Object> copyProject(String key) {
+		try {
+			if (StringUtil.isNullOrEmpty(key)) {
+				return ResultUtil.failed("存在空值,项目的id为必填");
+			}
+			Project project = ConfigUtil.getProject(key);
+			project.setKey(UUID.randomUUID().toString());
+			JSONObject info = new JSONObject(project.getInfo());
+			if (info.has("title")) {
+				info.put("title", info.getString("title") + "_副本");
+			} else {
+				info.put("title", "_副本");
+			}
+			project.setInfo(info.toString());
+			List<ProjectApiGroup> groups = ConfigUtil.getProjectApiGroups(key);
+			if (groups != null && !groups.isEmpty()) {
+				for (ProjectApiGroup g : groups) {
+					String gid = new String(g.getGroupId());
+					g.setProjectId(project.getKey());
+					g.setGroupId(UUID.randomUUID().toString());
+					ConfigUtil.saveProjectApiGroup(g);
+					List<ProjectApi> apiList = ConfigUtil.getProjectApiList(gid);
+					if (apiList != null && !apiList.isEmpty()) {
+						for (ProjectApi api : apiList) {
+							api.setGroupId(g.getGroupId());
+							api.setOperationId(UUID.randomUUID().toString());
+							ConfigUtil.saveProjectApi(api);
+						}
+					}
+				}
+			}
+			ConfigUtil.saveProject(project);
+			return ResultUtil.succeed(1);
+		} catch (Throwable e) {
 			e.printStackTrace();
 			return ResultUtil.failed(e.getMessage());
 		}

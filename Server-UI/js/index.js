@@ -31,6 +31,7 @@ function loadProjectList(complete) {
         }
     });
 }
+
 /**
  * 从服务器获取指定项目的数据
  * @param id
@@ -55,6 +56,7 @@ function getProject(id, res) {
         }
     });
 }
+
 /**
  * 请求项目
  * @param id
@@ -66,6 +68,7 @@ function requestProject(id) {
     }
     location.href = href + "?pid=" + id;
 }
+
 /**
  * 显示项目
  * @param id
@@ -82,6 +85,7 @@ function loadProject(id) {
         }
     });
 }
+
 /**
  * 加载接口分组
  * @param projectId
@@ -231,6 +235,7 @@ function createProject() {
         }
     });
 }
+
 /**加载修改项目所需要用的相关属性*/
 function loadUpdateProject(id) {
     getProject(id, function (swagger) {
@@ -319,6 +324,37 @@ function updateProject() {
         }
     });
 }
+
+/**
+ * 项目复制一份副本
+ * @param id 项目的id
+ */
+function copyProject(id) {
+    if (confirm('确定复制该副本吗?')) {
+        doAJAX(METHOD_POST, SERVER_HOST + '/project/copy/' + id, null, function (result) {
+            if (result.code == 200) {
+                console.log("复制成功");
+                alert('复制成功!');
+                self.location = "./index.html?pid=" + id;
+            } else {
+                console.log("msg:" + result.msg + " ,data:");
+                console.log(result.data);
+                confirm("复制项目失败");
+            }
+        }, function (e) {
+            console.log("复制项目失败...");
+            console.log(e);
+            var state = e.readyState;
+            if (state == 0) {
+                alert('复制项目需要先启动服务器,请在当前目录双击start.bat');
+            } else {
+                confirm('复制项目失败了');
+            }
+        });
+    }
+}
+
+
 /**
  * 删除项目
  * @param id
@@ -347,6 +383,7 @@ function deletProject(id) {
         });
     }
 }
+
 /**
  * 获取分组消息,给方法只获取新增时所需的数据,id等其他数据需要在调用该方法后获取
  * @returns {{}}
@@ -408,6 +445,7 @@ function createApiGroup() {
         }
     });
 }
+
 /**
  * 加载分组要修改的信息
  * @param id
@@ -472,6 +510,7 @@ function updateApiGroup() {
         }
     });
 }
+
 /**
  * 删除接口分组
  * @param id

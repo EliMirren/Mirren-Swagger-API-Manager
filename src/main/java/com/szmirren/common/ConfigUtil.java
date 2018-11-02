@@ -188,7 +188,7 @@ public class ConfigUtil {
 	 * @throws Throwable
 	 */
 	public static List<ProjectInfo> getProjectList() throws Throwable {
-		String sql = "select * from project";
+		String sql = "select * from project order by " + ProjectColumns.LAST_TIME + " desc";
 		FunctionResult<List<ProjectInfo>> execute = query(sql, resultSet -> {
 			try {
 				List<ProjectInfo> result = new ArrayList<>();
@@ -220,11 +220,13 @@ public class ConfigUtil {
 	 * @throws Exception
 	 */
 	public static void saveProject(Project project) throws Exception {
-		String sql = String.format("insert into project (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-				ProjectColumns.KEY, ProjectColumns.SWAGGER, ProjectColumns.INFO, ProjectColumns.HOST, ProjectColumns.BASE_PATH,
-				ProjectColumns.SCHEMES, ProjectColumns.CONSUMES, ProjectColumns.PRODUCES, ProjectColumns.SECURITY,
-				ProjectColumns.SECURITY_DEFINITIONS, ProjectColumns.DEFINITIONS, ProjectColumns.PARAMETERS, ProjectColumns.RESPONSES,
-				ProjectColumns.EXTERNAL_DOCS, ProjectColumns.VENDOR_EXTENSIONS);
+		project.setLastTime(System.currentTimeMillis());
+		String sql = String.format(
+				"insert into project (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProjectColumns.KEY,
+				ProjectColumns.SWAGGER, ProjectColumns.INFO, ProjectColumns.HOST, ProjectColumns.BASE_PATH, ProjectColumns.SCHEMES,
+				ProjectColumns.CONSUMES, ProjectColumns.PRODUCES, ProjectColumns.SECURITY, ProjectColumns.SECURITY_DEFINITIONS,
+				ProjectColumns.DEFINITIONS, ProjectColumns.PARAMETERS, ProjectColumns.RESPONSES, ProjectColumns.EXTERNAL_DOCS,
+				ProjectColumns.VENDOR_EXTENSIONS,ProjectColumns.LAST_TIME);
 		List<Object> params = new ArrayList<>();
 		params.add(StringUtil.isNullOrEmpty(project.getKey()) ? UUID.randomUUID().toString() : project.getKey());
 		params.add(project.getSwagger());
@@ -241,6 +243,7 @@ public class ConfigUtil {
 		params.add(project.getResponses());
 		params.add(project.getExternalDocs());
 		params.add(project.getVendorExtensions());
+		params.add(project.getLastTime());
 		update(sql, params);
 	}
 
@@ -251,6 +254,7 @@ public class ConfigUtil {
 	 * @throws Exception
 	 */
 	public static void updateProject(Project project) throws Exception {
+		project.setLastTime(System.currentTimeMillis());
 		StringBuilder set = new StringBuilder("set ");
 		List<Object> params = new ArrayList<>();
 		if (project.getSwagger() != null) {
@@ -310,6 +314,9 @@ public class ConfigUtil {
 			set.append(ProjectColumns.VENDOR_EXTENSIONS + " = ? ,");
 			params.add(project.getVendorExtensions());
 		}
+		set.append(ProjectColumns.LAST_TIME + " = ? ,");
+		params.add(project.getLastTime());
+
 		params.add(project.getKey());
 		String sql = "update project " + set.substring(0, set.length() - 1) + " where key = ?";
 		update(sql, params);
@@ -347,9 +354,9 @@ public class ConfigUtil {
 		String sql = String.format("delete from project where %s = ? ", ProjectColumns.KEY);
 		update(sql, params);
 	}
-	
+
 	/**
-	 * 获取指定项目的所有分组
+	 * 获取指定项目的所有分组,包括分组的接口
 	 * 
 	 * @param projectId
 	 * @return
@@ -408,7 +415,7 @@ public class ConfigUtil {
 	}
 
 	/**
-	 * 获取指定项目的所有接口分组
+	 * 获取指定项目的所有接口分组,该方法只放回分组本身,不返回分组的接口
 	 * 
 	 * @param groupId
 	 *          分组的id
@@ -574,6 +581,50 @@ public class ConfigUtil {
 		params.add(api.getDeprecated());
 		params.add(api.getVendorExtensions());
 		update(sql, params);
+	}
+
+	/**
+	 * 获取指定分组下的所有接口信息
+	 * 
+	 * @param groupsId
+	 * @return
+	 * @throws Throwable
+	 */
+	public static List<ProjectApi> getProjectApiList(String groupsId) throws Throwable {
+		String sql = String.format("select * from project_api where %s=?", ApiColumns.GROUP_ID);
+		FunctionResult<List<ProjectApi>> result = query(sql, StringUtil.asList(groupsId), res -> {
+			try {
+				List<ProjectApi> apis = new ArrayList<>();
+				while (res.next()) {
+					ProjectApi api = new ProjectApi();
+					api.setOperationId(res.getString(ApiColumns.OPERATION_ID));
+					api.setGroupId(res.getString(ApiColumns.GROUP_ID));
+					api.setPath(res.getString(ApiColumns.PATH));
+					api.setMethod(res.getString(ApiColumns.METHOD));
+					api.setTags(res.getString(ApiColumns.TAGS));
+					api.setSummary(res.getString(ApiColumns.SUMMARY));
+					api.setDescription(res.getString(ApiColumns.DESCRIPTION));
+					api.setSchemes(res.getString(ApiColumns.SCHEMES));
+					api.setConsumes(res.getString(ApiColumns.CONSUMES));
+					api.setProduces(res.getString(ApiColumns.PRODUCES));
+					api.setParameters(res.getString(ApiColumns.PARAMETERS));
+					api.setResponses(res.getString(ApiColumns.RESPONSES));
+					api.setSecurity(res.getString(ApiColumns.SECURITY));
+					api.setExternalDocs(res.getString(ApiColumns.EXTERNAL_DOCS));
+					api.setDeprecated(res.getString(ApiColumns.DEPRECATED));
+					api.setVendorExtensions(res.getString(ApiColumns.VENDOR_EXTENSIONS));
+					apis.add(api);
+				}
+				return new FunctionResult<>(apis);
+			} catch (SQLException e) {
+				return new FunctionResult<>(e);
+			}
+		});
+		if (result.succeeded()) {
+			return result.result();
+		} else {
+			throw result.cause();
+		}
 	}
 	/**
 	 * 获取指定接口的信息

@@ -6,8 +6,10 @@ package com.szmirren.common;
  *
  */
 public interface ProjectColumns {
-	/** key */
+	/** key 项目的id */
 	public final static String KEY = "key";
+	/** last_time 最后操作时间 */
+	public final static String LAST_TIME = "last_time";
 	/** swagger */
 	public final static String SWAGGER = "swagger";
 	/** info */
