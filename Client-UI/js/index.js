@@ -18,7 +18,7 @@ $(function () {
         console.log('获取项目列表');
         $.ajax({
             'type': 'get',
-            'url': 'http://localhost:8686/project',
+            'url': '/project',
             'async': true,
             'success': function (result) {
                 if (result.code == 200) {
