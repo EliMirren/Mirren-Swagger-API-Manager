@@ -830,7 +830,11 @@ function tryItOutApi() {
         });
     } else {
         if (!jQuery.isEmptyObject(bodyOrDataParam)) {
-            execute.data = bodyOrDataParam;
+            if(consumes=='application/json'){
+                execute.data = JSON.stringify(bodyOrDataParam);
+            }else{
+                execute.data = bodyOrDataParam;
+            }
         }
         if (!jQuery.isEmptyObject(headerParams)) {
             execute.beforeSend = function (request) {
