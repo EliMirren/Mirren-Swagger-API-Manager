@@ -2,7 +2,6 @@ package com.szmirren.service;
 
 import java.util.Map;
 
-<<<<<<< HEAD
 import com.szmirren.entity.RequestData;
 
 /**

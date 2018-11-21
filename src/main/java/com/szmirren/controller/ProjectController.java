@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.szmirren.common.Constant;
 import com.szmirren.entity.Project;
-<<<<<<< HEAD
 import com.szmirren.entity.RequestData;
-=======
->>>>>>> branch 'master' of https://github.com/EliMirren/Mirren-Swagger-API-Manager.git
 import com.szmirren.service.HttpApiProxy;
 import com.szmirren.service.ProjectService;
 @CrossOrigin
