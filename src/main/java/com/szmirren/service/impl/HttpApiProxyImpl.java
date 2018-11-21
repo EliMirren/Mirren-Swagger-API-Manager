@@ -69,4 +69,9 @@ public class HttpApiProxyImpl implements HttpApiProxy {
 		} catch (UnknownHostException unknown) {
 			unknown.printStackTrace();
 			return ResultUtil.failed("无法识别主机:" + unknown.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultUtil.failed(e.getMessage());
+		}
+	}
 }
