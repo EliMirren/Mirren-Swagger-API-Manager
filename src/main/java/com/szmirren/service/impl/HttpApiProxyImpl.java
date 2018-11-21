@@ -1,5 +1,6 @@
 package com.szmirren.service.impl;
 
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,8 +41,8 @@ public class HttpApiProxyImpl implements HttpApiProxy {
 
 	@Override
 	public Map<String, Object> executeProxy(RequestData data) {
-		MsamHttpRequest request = new MsamHttpRequest(data.getType(), data.getUrl() + data.getQueryParams());
 		try {
+			MsamHttpRequest request = new MsamHttpRequest(data.getType(), data.getUrl() + data.getQueryParams());
 			HttpClient client = HttpClientBuilder.create().build();
 			if (data.getHeaders() != null) {
 				JSONObject object = new JSONObject(data.getHeaders());
@@ -66,10 +67,12 @@ public class HttpApiProxyImpl implements HttpApiProxy {
 				String result = EntityUtils.toString(response.getEntity());
 				return ResultUtil.succeed(result);
 			}
-		} catch (UnknownHostException unknown) {
-			unknown.printStackTrace();
-			return ResultUtil.failed("无法识别主机:" + unknown.getMessage());
 		} catch (Exception e) {
+			if (e instanceof URISyntaxException || e instanceof IllegalArgumentException) {
+				return ResultUtil.failed("\n无效的URL路径,如果有Path参数请填充Path参数\n" + e.getMessage());
+			} else if (e instanceof UnknownHostException) {
+				return ResultUtil.failed("\n无法识别主机:" + e.getMessage());
+			}
 			e.printStackTrace();
 			return ResultUtil.failed(e.getMessage());
 		}

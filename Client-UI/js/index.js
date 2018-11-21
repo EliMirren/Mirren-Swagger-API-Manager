@@ -628,7 +628,6 @@ function tryItOut(obj) {
         for (var i = 0; i < data.consumes.length; i++) {
             $("#try_it_out_consumes").append($('<option value=' + data.consumes[i] + '>' + data.consumes[i] + '</option>'));
         }
-
     } else {
         $("#try_it_out_consumes_box").hide();
         $("#try_it_out_consumes").html('');
@@ -649,12 +648,10 @@ function tryItOut(obj) {
         $("#try_it_out_parameter").html('');
         for (var i = 0; i < data.parameters.length; i++) {
             var param = data.parameters[i];
-            if ('path' == param.in) {
-                continue;
-            }
             var formatValue = param.format == null ? "" : "data-format='" + param.format + "'";
             var trHtml = '<tr data-type="' + param.type + '" ' + formatValue + '>';
             trHtml += '<td><input class="form-control" value=\'' + param.in + '\' type="text"></td>';
+
             trHtml += '<td><input class="form-control" value=\'' + param.name + '\' type="text"></td>';
             trHtml += '<td><input class="form-control" value=\'' + (param.default == null ? "" : param.default) + '\' type="text"></td>';
             trHtml += '<td><span class="btn btn-xs btn-danger" onclick="removeRequestParam(this)">移除</span></td>';
@@ -684,7 +681,6 @@ function tryItOut(obj) {
             }
             $("#try_it_out_parameter").append($(trHtml));
         }
-        $("#try_it_out_parameter_tips").append($('<div class="text-center font-size-14px">二级参数值优先于一级参数值</div>'));
     } else {
         $("#try_it_out_parameter_box").hide();
     }
@@ -726,7 +722,7 @@ function tryItOutApi() {
         var tr = $(trs[i]);
         var type = tr.attr('data-type');
         var format = tr.attr('data-format');
-        var item = {}
+        var item = {};
         item.in = tr.children()[0].children[0].value;
         item.name = tr.children()[1].children[0].value;
         item.value = tr.children()[2].children[0].value;
@@ -778,6 +774,8 @@ function tryItOutApi() {
             } else {
                 queryParams += prefix + item.name + '=' + item.value;
             }
+        } else if (item.in == 'path') {
+            url = url.replace("{" + item.name + "}", item.value);
         } else {
             if (item.items != null && item.items.length > 0) {
                 if ('string' == format) {

@@ -142,6 +142,9 @@ function getParameterInSelectOptionHtml(value, txt) {
     if (value != 'header') {
         html += '<option value="header">header</option>';
     }
+    if (value != 'path') {
+        html += '<option value="path">path</option>';
+    }
     html += '</select>';
     return html;
 }
