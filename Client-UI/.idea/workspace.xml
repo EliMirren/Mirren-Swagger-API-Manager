@@ -21,11 +21,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="426">
+              <caret line="145" column="54" selection-start-line="145" selection-start-column="54" selection-end-line="145" selection-end-column="54" />
+=======
             <state relative-caret-position="594">
               <caret line="42" column="85" selection-start-line="42" selection-start-column="85" selection-end-line="42" selection-end-column="85" />
+>>>>>>> branch 'master' of https://github.com/EliMirren/Mirren-Swagger-API-Manager.git
               <folding>
                 <element signature="n#style#0;n#input#0;n#div#1;n#div#1;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#input#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -34,11 +39,16 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/index.js">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="624">
+              <caret line="824" column="43" lean-forward="true" selection-start-line="824" selection-start-column="43" selection-end-line="824" selection-end-column="43" />
+=======
             <state relative-caret-position="259">
               <caret line="100" column="53" selection-start-line="100" selection-start-column="53" selection-end-line="100" selection-end-column="53" />
+>>>>>>> branch 'master' of https://github.com/EliMirren/Mirren-Swagger-API-Manager.git
               <folding>
                 <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
@@ -73,8 +83,8 @@
       <list>
         <option value="$PROJECT_DIR$/css/index.css" />
         <option value="$PROJECT_DIR$/js/format.js" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/js/index.js" />
+        <option value="$PROJECT_DIR$/index.html" />
       </list>
     </option>
   </component>
@@ -111,7 +121,7 @@
   <component name="PropertiesComponent">
     <property name="HbShouldOpenHtmlAsHb" value="" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../vue/vx-api-client" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -172,11 +182,20 @@
       <workItem from="1540982526163" duration="13110000" />
       <workItem from="1541129090614" duration="2092000" />
       <workItem from="1542769911598" duration="1914000" />
+<<<<<<< HEAD
+      <workItem from="1542773932682" duration="1487000" />
+      <workItem from="1542776978617" duration="6012000" />
+=======
+>>>>>>> branch 'master' of https://github.com/EliMirren/Mirren-Swagger-API-Manager.git
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
+    <option name="totallyTimeSpent" value="79241000" />
+=======
     <option name="totallyTimeSpent" value="71742000" />
+>>>>>>> branch 'master' of https://github.com/EliMirren/Mirren-Swagger-API-Manager.git
   </component>
   <component name="ToolWindowManager">
     <frame x="61" y="-8" width="1867" height="1096" extended-state="0" />
@@ -245,6 +264,8 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+=======
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="594">
@@ -256,16 +277,36 @@
         </state>
       </provider>
     </entry>
+>>>>>>> branch 'master' of https://github.com/EliMirren/Mirren-Swagger-API-Manager.git
     <entry file="file://$PROJECT_DIR$/js/index.js">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="624">
+          <caret line="824" column="43" lean-forward="true" selection-start-line="824" selection-start-column="43" selection-end-line="824" selection-end-column="43" />
+=======
         <state relative-caret-position="259">
           <caret line="100" column="53" selection-start-line="100" selection-start-column="53" selection-end-line="100" selection-end-column="53" />
+>>>>>>> branch 'master' of https://github.com/EliMirren/Mirren-Swagger-API-Manager.git
           <folding>
             <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#select#0;n#span#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#select#0;n#span#0;n#!!top" expanded="true" />
+<<<<<<< HEAD
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="426">
+          <caret line="145" column="54" selection-start-line="145" selection-start-column="54" selection-end-line="145" selection-end-column="54" />
+          <folding>
+            <element signature="n#style#0;n#input#0;n#div#1;n#div#1;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+=======
+>>>>>>> branch 'master' of https://github.com/EliMirren/Mirren-Swagger-API-Manager.git
           </folding>
         </state>
       </provider>

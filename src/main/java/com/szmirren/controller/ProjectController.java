@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.szmirren.common.Constant;
 import com.szmirren.entity.Project;
+<<<<<<< HEAD
+import com.szmirren.entity.RequestData;
+=======
+>>>>>>> branch 'master' of https://github.com/EliMirren/Mirren-Swagger-API-Manager.git
 import com.szmirren.service.HttpApiProxy;
 import com.szmirren.service.ProjectService;
 @CrossOrigin
@@ -50,7 +54,17 @@ public class ProjectController {
 	}
 
 	/**
-	 * 获取所有项目
+	 * 代理执行
+	 * 
+	 * @return
+	 */
+	@PostMapping(value = "/proxy", produces = {"application/json;charset=UTF-8"})
+	public Map<String, Object> proxy(RequestData data) {
+		Map<String, Object> result = apiProxy.executeProxy(data);
+		return result;
+	}
+	/**
+	 * 代理获取获取所有项目
 	 * 
 	 * @return
 	 */

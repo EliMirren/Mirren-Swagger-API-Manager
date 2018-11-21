@@ -143,6 +143,9 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <label title="使用代理可以处理跨域问题(需要配合MSAM服务器),不使用代理则直接请求目标服务">
+                    <input type="checkbox" id="try_it_out_is_proxy" checked="checked"> 使用代理
+                </label>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-primary" id="update-api-group-btn" onclick="tryItOutApi()">
                     执行请求

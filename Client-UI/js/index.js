@@ -793,50 +793,117 @@ function tryItOutApi() {
 
     var execute = {};
     execute.type = method;
-    execute.url = url + queryParams;
     if (consumes != null && consumes != '') {
         execute.contentType = consumes;
     }
-    execute.data = bodyOrDataParam;
-    if (!jQuery.isEmptyObject(headerParams)) {
-        execute.beforeSend = function (request) {
-            for (key in headerParams) {
-                request.setRequestHeader(key, headerParams[key]);
+    if ($('#try_it_out_is_proxy').is(':checked')) {
+        if (!jQuery.isEmptyObject(headerParams)) {
+            execute.headers = JSON.stringify(headerParams);
+        }
+        if (!jQuery.isEmptyObject(bodyOrDataParam)) {
+            execute.data = JSON.stringify(bodyOrDataParam);
+        }
+        execute.url = url;
+        execute.queryParams = queryParams;
+        show_hide_tips_panel(true, '请求执行中...');
+        console.log(execute);
+        $.ajax({
+            type: 'post',
+            url: '/proxy',
+            async: true,
+            data: execute,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    tryRequestSuccess(produces, data.data);
+                } else {
+                    show_hide_tips_panel(true, '执行请求失败,请查看控制台详细信息! ');
+                    setTimeout(function () {
+                        show_hide_tips_panel(false, "");
+                    }, 1000);
+                    console.log('执行请求失败:');
+                    console.log(data.data);
+                    var resultJson = data.data;
+                    $("#try_it_out_response").html('执行请求失败,更多错误信息请查看控制台信息: ' + resultJson);
+                    $("#try_it_out_response_box").show();
+                }
+            },
+            error: tryRequestError
+        });
+    } else {
+        if (!jQuery.isEmptyObject(bodyOrDataParam)) {
+            execute.data = bodyOrDataParam;
+        }
+        if (!jQuery.isEmptyObject(headerParams)) {
+            execute.beforeSend = function (request) {
+                for (key in headerParams) {
+                    request.setRequestHeader(key, headerParams[key]);
+                }
             }
+        }
+        execute.url = url + queryParams;
+        execute.success = function (data) {
+            show_hide_tips_panel(false, '');
+            console.log('执行请求成功:');
+            console.log(data);
+            var dataText = "请求成功!\n";
+            if (produces != null && produces.toLowerCase().indexOf('xml') != -1) {
+                dataText += formatXml(data)
+            } else {
+                try {
+                    dataText += formatJson(data);
+                } catch (e) {
+                    dataText += data.toString();
+                }
+            }
+            $("#try_it_out_response").html(dataText);
+            $("#try_it_out_response_box").show();
+        };
+        execute.error = tryRequestError;
+        show_hide_tips_panel(true, '请求执行中...');
+        $.ajax(execute);
+
+    }
+}
+
+/**
+ * 请求成功
+ * @param data
+ */
+function tryRequestSuccess(produces, data) {
+    show_hide_tips_panel(false, '');
+    console.log('执行请求成功:');
+    console.log(data);
+    var dataText = "请求成功!\n";
+    if (produces != null && produces.toLowerCase().indexOf('xml') != -1) {
+        dataText += formatXml(data)
+    } else {
+        try {
+            dataText += formatJson(data);
+        } catch (e) {
+            dataText += data.toString();
         }
     }
-    execute.success = function (data) {
-        show_hide_tips_panel(false, '');
-        console.log('执行请求成功:');
-        console.log(data);
-        var dataText = "请求成功!\n";
-        if (produces != null && produces.toLowerCase().indexOf('xml') != -1) {
-            dataText += formatXml(data)
-        } else {
-            try {
-                dataText += formatJson(data);
-            } catch (e) {
-                dataText += data.toString();
-            }
-        }
-        $("#try_it_out_response").html(dataText);
-        $("#try_it_out_response_box").show();
-    };
-    execute.error = function (err) {
-        show_hide_tips_panel(true, '执行请求失败,请查看控制台详细信息! ');
-        setTimeout(function () {
-            show_hide_tips_panel(false, "");
-        }, 1000);
-        console.log('执行请求失败:');
-        console.log(err);
-        var resultJson = formatJson(err);
-        $("#try_it_out_response").html('执行请求失败,更多错误信息请查看控制台信息: ' + resultJson);
-        $("#try_it_out_response_box").show();
-    };
-
-    show_hide_tips_panel(true, '请求执行中...');
-    $.ajax(execute);
+    $("#try_it_out_response").html(dataText);
+    $("#try_it_out_response_box").show();
 }
+
+/**
+ * 请求失败
+ * @param err
+ */
+function tryRequestError(err) {
+    show_hide_tips_panel(true, '执行请求失败,请查看控制台详细信息! ');
+    setTimeout(function () {
+        show_hide_tips_panel(false, "");
+    }, 1000);
+    console.log('执行请求失败:');
+    console.log(err);
+    var resultJson = formatJson(err);
+    $("#try_it_out_response").html('执行请求失败,更多错误信息请查看控制台信息: ' + resultJson);
+    $("#try_it_out_response_box").show();
+}
+
 
 /**
  * 显示或者隐藏提示面板

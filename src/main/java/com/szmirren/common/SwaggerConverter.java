@@ -245,7 +245,7 @@ public interface SwaggerConverter {
 			tags.add(toTag(group));
 			List<ProjectApi> apis = group.getApis();
 			for (ProjectApi api : apis) {
-				Path path = new MsamPath();
+				Path path = paths.get(api.getPath()) == null ? new MsamPath() : paths.get(api.getPath());
 				path.set(api.getMethod(), toOperation(group.getName(), api));
 				paths.put(api.getPath(), path);
 			}
