@@ -87,20 +87,45 @@ function getPojectAndLoad() {
     $("#api-group-main").html('');
     $("#msam-project-info-top").html('');
     $("#msam-project-info-main").html('');
-    $.ajax({
-        type: 'get',
-        url: urls,
-        async: true,
-        dataType: "json",
-        success: function (data) {
-            loadProject(data);//加载项目信息
-            show_hide_tips_panel(false, '');
-        },
-        error: function (err) {
-            alert("获取数据失败!");
-            console.log(err)
-        }
-    });
+
+    if (urls.charAt(0) == 'P' && urls.charAt(1) == ':') {
+        urls = urls.substring(2);
+        $.ajax({
+            type: 'get',
+            url: '/proxy/project',
+            async: true,
+            data: {'url': urls},
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    loadProject(JSON.parse(data.data));//加载项目信息
+                    show_hide_tips_panel(false, '');
+                } else {
+                    alert("获取数据失败,详情请查看控制台");
+                    console.log(data.data);
+                }
+            },
+            error: function (err) {
+                alert("获取数据失败,详情请查看控制台");
+                console.log(err)
+            }
+        });
+    } else {
+        $.ajax({
+            type: 'get',
+            url: urls,
+            async: true,
+            dataType: "json",
+            success: function (data) {
+                loadProject(data);//加载项目信息
+                show_hide_tips_panel(false, '');
+            },
+            error: function (err) {
+                alert("获取数据失败,详情请查看控制台");
+                console.log(err)
+            }
+        });
+    }
 }
 
 /**

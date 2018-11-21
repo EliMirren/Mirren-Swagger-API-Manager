@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.szmirren.common.Constant;
 import com.szmirren.entity.Project;
+import com.szmirren.service.HttpApiProxy;
 import com.szmirren.service.ProjectService;
 @CrossOrigin
 @RestController
@@ -24,6 +25,8 @@ public class ProjectController {
 	/** 项目服务接口 */
 	@Autowired
 	private ProjectService proService;
+	@Autowired
+	private HttpApiProxy apiProxy;
 	/**
 	 * 
 	 * @return
@@ -45,6 +48,18 @@ public class ProjectController {
 	public Map<String, Object> getProjectList() {
 		return proService.getProjectList();
 	}
+
+	/**
+	 * 获取所有项目
+	 * 
+	 * @return
+	 */
+	@GetMapping(value = "/proxy/project", produces = {"application/json;charset=UTF-8"})
+	public Map<String, Object> proxyGetProject(String url) {
+		Map<String, Object> result = apiProxy.getProxy(url);
+		return result;
+	}
+
 	/**
 	 * 获取所有项目
 	 * 
