@@ -830,9 +830,9 @@ function tryItOutApi() {
         });
     } else {
         if (!jQuery.isEmptyObject(bodyOrDataParam)) {
-            if(consumes=='application/json'){
+            if (consumes == 'application/json') {
                 execute.data = JSON.stringify(bodyOrDataParam);
-            }else{
+            } else {
                 execute.data = bodyOrDataParam;
             }
         }
@@ -847,18 +847,30 @@ function tryItOutApi() {
         execute.success = function (data) {
             show_hide_tips_panel(false, '');
             console.log('执行请求成功:');
-            console.log(data);
             var dataText = "请求成功!\n";
             if (produces != null && produces.toLowerCase().indexOf('xml') != -1) {
-                dataText += formatXml(data)
+                var xmlString;
+                if (window.ActiveXObject) {
+                    xmlString = data.xml;
+                } else {
+                    xmlString = (new XMLSerializer()).serializeToString(data);
+                }
+                dataText += formatXml(xmlString);
+                $("#try_it_out_response").html('<textarea class="form-control none_resize" id="try_it_out_response_xml_box" ' +
+                    'placeholder="响应结果" ' +
+                    'style="border: 1px solid #f5f5f5 ;background-color: #f5f5f5" readonly>' + dataText + '</textarea>');
+                setTimeout(function () {
+                    var box = document.getElementById("try_it_out_response_xml_box");
+                    box.setAttribute('style', 'border: 1px solid #f5f5f5 ;background-color: #f5f5f5;height:' + (box.scrollHeight) + 'px;');
+                }, 500);
             } else {
                 try {
                     dataText += formatJson(data);
                 } catch (e) {
                     dataText += data.toString();
                 }
+                $("#try_it_out_response").html('<code>' + dataText + '<code>');
             }
-            $("#try_it_out_response").html(dataText);
             $("#try_it_out_response_box").show();
         };
         execute.error = tryRequestError;
@@ -878,15 +890,24 @@ function tryRequestSuccess(produces, data) {
     console.log(data);
     var dataText = "请求成功!\n";
     if (produces != null && produces.toLowerCase().indexOf('xml') != -1) {
-        dataText += formatXml(data)
+        dataText += formatXml(data);
+        $("#try_it_out_response").html('<textarea class="form-control none_resize" id="try_it_out_response_xml_box" ' +
+            'placeholder="响应结果" ' +
+            'style="border: 1px solid #f5f5f5 ;background-color: #f5f5f5" readonly>' + dataText + '</textarea>');
+        console.log( $("#try_it_out_response").html());
+        setTimeout(function () {
+            var box = document.getElementById("try_it_out_response_xml_box");
+            console.log(box);
+            box.setAttribute('style', 'border: 1px solid #f5f5f5 ;background-color: #f5f5f5;height:' + (box.scrollHeight) + 'px;');
+        }, 500);
     } else {
         try {
             dataText += formatJson(data);
         } catch (e) {
             dataText += data.toString();
         }
+        $("#try_it_out_response").html(dataText);
     }
-    $("#try_it_out_response").html(dataText);
     $("#try_it_out_response_box").show();
 }
 
