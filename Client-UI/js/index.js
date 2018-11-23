@@ -1,5 +1,33 @@
+/**
+ * 获取指定路径参数
+ * @param name
+ * @returns {*}
+ */
+function getUrlParam(name) {
+    var url = document.location.toString();
+    var arrObj = url.split("?");
+    if (arrObj.length > 1) {
+        var arrPara = arrObj[1].split("&");
+        var arr;
+        for (var i = 0; i < arrPara.length; i++) {
+            arr = arrPara[i].split("=");
+            if (arr != null && arr[0] == name) {
+                return arr[1];
+            }
+        }
+        return "";
+    }
+    else {
+        return "";
+    }
+}
+
+
 //如果文件路径不为空就加载数据
 $(function () {
+    var file = getUrlParam("file");
+    $("#project_json_url").val(file);
+
     var isLoad = false;//编辑是否加载了文件
     var urls = $("#project_json_url").val();
     if (urls != '') {

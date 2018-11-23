@@ -42,4 +42,9 @@ public class MsamHttpRequest extends HttpEntityEnclosingRequestBase {
 		return requestMethod.toUpperCase();
 	}
 
+	@Override
+	public String toString() {
+		return "MsamHttpRequest [requestMethod=" + requestMethod + "]";
+	}
+
 }
